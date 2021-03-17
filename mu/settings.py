@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     "crispy_forms",
-    "rest_framework"
+    "rest_framework",
+
+    "forum.apps.ForumConfig",
+    "user.apps.UserConfig"
 ]
 
 MIDDLEWARE = [
@@ -60,7 +63,7 @@ ROOT_URLCONF = "mu.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [ "templates" ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -124,6 +127,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"

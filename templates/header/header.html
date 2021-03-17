@@ -1,0 +1,68 @@
+{% load static %}
+
+<nav class = "navbar navbar-expand-lg navbar-light bg-light">
+    <div class = "container-fluid">
+        <a class = "navbar-brand" href = "{% url 'index' %}">
+            <img src = "{% static 'images/logo.png' %}" alt = "mu brand" width = "64" height = "64">
+        </a>
+        <button
+            class = "navbar-toggler"
+            type = "button"
+            data-bs-toggle = "collapse"
+            data-bs-target = "#navbar-supported-content"
+            aria-controls = "navbar-supported-content"
+            aria-expanded = "false"
+            aria-label = "Toggle navigation"
+            >
+            <span class = "navbar-toggler-icon"></span>
+        </button>
+
+        <div class = "collapse navbar-collapse" id = "navbar-supported-content">
+            <ul class = "navbar-nav me-auto mb-2 mb-lg-0">
+                {% with url_name=request.resolver_match.url_name %}
+                    {% if request.user.is_authenticated %}
+                    {% else %}
+                        {% if url_name == 'user-login' %}
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'user-login' %}"
+                                    >
+                                    Log in
+                                </a>
+                            </li>
+
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'user-signup' %}">Sign up</a>
+                            </li>
+                        {% elif url_name == 'user-signup' %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'user-login' %}">Log in</a>
+                            </li>
+
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'user-signup' %}"
+                                    >
+                                    Sign up
+                                </a>
+                            </li>
+
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'user-login' %}">Log in</a>
+                            </li>
+
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'user-signup' %}">Sign up</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+            </ul>
+        </div>
+    </div>
+</nav>
