@@ -21,8 +21,39 @@
             <ul class = "navbar-nav me-auto mb-2 mb-lg-0">
                 {% with url_name=request.resolver_match.url_name %}
                     {% if request.user.is_authenticated %}
+                        {% if url_name == "profile-view" and object.user == request.user %}
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'profile-view' request.user.username %}"
+                                    >
+                                    Profile
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'profile-view' request.user.username %}">Profile</a>
+                            </li>
+                        {% endif %}
+
+                        {% if url_name == "user-logout" %}
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'user-logout' %}"
+                                    >
+                                    Log out
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'user-logout' %}">Log out</a>
+                            </li>
+                        {% endif %}
                     {% else %}
-                        {% if url_name == 'user-login' %}
+                        {% if url_name == "user-login" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
@@ -32,15 +63,13 @@
                                     Log in
                                 </a>
                             </li>
-
-                            <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'user-signup' %}">Sign up</a>
-                            </li>
-                        {% elif url_name == 'user-signup' %}
+                        {% else %}
                             <li class = "nav-item">
                                 <a class = "nav-link" href = "{% url 'user-login' %}">Log in</a>
                             </li>
+                        {% endif %}
 
+                        {% if url_name == "user-signup" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
@@ -50,12 +79,7 @@
                                     Sign up
                                 </a>
                             </li>
-
                         {% else %}
-                            <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'user-login' %}">Log in</a>
-                            </li>
-
                             <li class = "nav-item">
                                 <a class = "nav-link" href = "{% url 'user-signup' %}">Sign up</a>
                             </li>

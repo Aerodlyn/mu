@@ -2,3 +2,12 @@
 .asteriskField {
     color: red;
 }
+
+.profile-img {
+    max-width: 96px;
+    max-height: 96px;
+}
+
+.text-pre-line {
+    white-space: pre-line;
+}

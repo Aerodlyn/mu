@@ -26,7 +26,18 @@
     <body class = "d-flex flex-column h-100">
         {% include "header/header.html" %}
 
-        <main class = "h-100">
+        {% block subheader %}
+            <subheader class = "d-flex align-items-center justify-content-between bg-light border-top border-bottom p-3">
+                <h4 class = "m-0">{% block subheader_title %}{% endblock %}</h4>
+
+                <div class = "d-flex">
+                    {% block subheader_buttons %}
+                    {% endblock %}
+                </div>
+            </subheader>
+        {% endblock %}
+
+        <main>
             {% block content %}{% endblock %}
         </main>
 

@@ -10,6 +10,9 @@ from django.contrib.auth.forms import (
     AuthenticationForm,
     UserCreationForm
 )
+from django.contrib.auth.models import User
+
+from .models import Profile
 
 class MuAuthenticationForm (AuthenticationForm):
     @property
@@ -51,3 +54,10 @@ class MuUserCreationForm (UserCreationForm):
         )
 
         return helper
+
+    # Override
+    def save (self, commit = True) -> User:
+        user = super ().save (commit)
+        Profile (user = user).save (commit)
+
+        return user

@@ -1,4 +1,7 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView
+)
 from django.urls import (
     path,
     reverse_lazy
@@ -9,8 +12,12 @@ from .forms import (
     MuAuthenticationForm,
     MuUserCreationForm
 )
+from .views import (
+    ProfileDetailView
+)
 
 urlpatterns = [
+    # User access views
     path (
         "login",
         LoginView.as_view (
@@ -20,6 +27,11 @@ urlpatterns = [
         name = "user-login"
     ),
     path (
+        "logout",
+        LogoutView.as_view (),
+        name = "user-logout"
+    ),
+    path (
         "signup",
         CreateView.as_view (
             form_class = MuUserCreationForm,
@@ -27,5 +39,12 @@ urlpatterns = [
             success_url = reverse_lazy ("user-login")
         ),
         name = "user-signup"
+    ),
+    
+    # Profile views
+    path (
+        "<str:username>",
+        ProfileDetailView.as_view (),
+        name = "profile-view"
     )
 ]
