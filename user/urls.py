@@ -13,7 +13,8 @@ from .forms import (
     MuUserCreationForm
 )
 from .views import (
-    ProfileDetailView
+    ProfileDetailView,
+    ProfileUpdateView
 )
 
 urlpatterns = [
@@ -46,5 +47,10 @@ urlpatterns = [
         "<str:username>",
         ProfileDetailView.as_view (),
         name = "profile-view"
+    ),
+    path (
+        "<str:username>/edit",
+        ProfileUpdateView.as_view (),
+        name = "profile-update"
     )
 ]

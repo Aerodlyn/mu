@@ -3,6 +3,11 @@
     color: red;
 }
 
+/* Override (small screen overflow fix) */
+.custom-file-input {
+    max-width: 100% !important;
+}
+
 .profile-img {
     max-width: 96px;
     max-height: 96px;

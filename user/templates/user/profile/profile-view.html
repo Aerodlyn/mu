@@ -2,7 +2,7 @@
 
 {% block subheader_buttons %}
     {% if request.user.is_authenticated and request.user == object.user %}
-        <a class = "btn btn-primary" href = "">Edit</a>
+        <a class = "btn btn-primary" href = "{% url 'profile-update' request.user.username %}">Edit</a>
     {% endif %}
 {% endblock subheader_buttons %}
 
@@ -15,12 +15,13 @@
 {% endblock subheader_title %}
 
 {% block content %}
-    <div class = "container-fluid mt-3">
+    <div class = "m-3">
+    <div class = "container">
         <div class = "row gy-3">
             <div class = "col-sm">
                 <div class = "card">
                     {% if object.avatar %}
-                        <img src = "{{ object.avatar }}" class = "card-img-top">
+                        <img src = "{{ object.avatar.url }}" class = "card-img-top">
                     {% endif %}
                     <div class = "card-body">
                         <p class = "text-muted">{{ object.user.username }}'s bio</p>
@@ -34,5 +35,6 @@
                 <p>Pretty empty around here...</p>
             </div>
         </div>
+    </div>
     </div>
 {% endblock content %}

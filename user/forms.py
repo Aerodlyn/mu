@@ -11,6 +11,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.models import User
+from django.forms import ModelForm
 
 from .models import Profile
 
@@ -61,3 +62,28 @@ class MuUserCreationForm (UserCreationForm):
         Profile (user = user).save (commit)
 
         return user
+
+class ProfileUpdateForm (ModelForm):
+    class Meta:
+        fields  : list      = [ "avatar", "bio", "private" ]
+        model   : Profile   = Profile
+
+    @property
+    def helper (self) -> FormHelper:
+        helper = FormHelper ()
+        helper.form_tag = False
+
+        helper.label_class = "col-sm-2 col-form-label"
+        helper.field_class = "col-sm"
+
+        helper.layout = Layout (
+            Field ("bio", wrapper_class = "row mb-3"),
+            Field ("avatar", wrapper_class = "row mb-3"),
+            Field ("private", wrapper_class = "row mb-3"),
+            ButtonHolder (
+                Submit ("update-profile", "Update"),
+                css_class = "row"
+            )
+        )
+
+        return helper

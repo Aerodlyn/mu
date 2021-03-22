@@ -1,0 +1,19 @@
+{% extends "base/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block subheader_buttons %}
+    <a class = "btn btn-primary" href = "{% url 'profile-view' request.user.username %}">Cancel</a>
+{% endblock subheader_buttons %}
+
+{% block subheader_title %}
+    Editing profile
+{% endblock subheader_title %}
+
+{% block content %}
+    <div class = "m-3">
+        <form class = "container needs-validation" method = "POST" action = "{% url 'profile-update' request.user.username %}" enctype = "multipart/form-data">
+            {% crispy form %}
+        </form>
+    </div>
+{% endblock content %}
