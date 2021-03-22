@@ -3,6 +3,8 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+{% block subheader %}{% endblock subheader %}
+
 {% block content %}
     {% if next %}
         <div class = "alert alert-danger alert-dismissible" role = "alert">
@@ -17,7 +19,7 @@
         </div>
     {% endif %}
 
-    <div class = "d-flex flex-column align-items-center justify-content-sm-center h-100 mx-3">
+    <div class = "d-flex flex-column align-items-center mx-3">
         <img class = "my-3" src = "{% static 'images/logo-no-text.png'%}" width = "100" height = "100">
         <form class = "container needs-validation" method = "POST" action = "{% url 'user-login' %}">
             {% crispy form %}
