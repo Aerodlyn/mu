@@ -135,5 +135,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+# Media files
+# https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-MEDIA_ROOT
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
