@@ -18,7 +18,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path (__file__).resolve ().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -32,7 +31,6 @@ ALLOWED_HOSTS = os.getenv ("ALLOWED_HOSTS", "").split ()
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -78,21 +76,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mu.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3"
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3"
+        }
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv ("DB_ENGINE"),
+            "HOST": os.getenv ("DB_HOST"),
+            "PORT": os.getenv ("DB_PORT"),
+            "NAME": os.getenv ("DB_NAME"),
+            "USER": os.getenv ("DB_USER"),
+            "PASSWORD": os.getenv ("DB_PASS")
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
@@ -108,24 +114,22 @@ AUTH_PASSWORD_VALIDATORS = [
     }
 ]
 
+# Login settings
+# Login/logout
+LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/user/login"
+LOGOUT_REDIRECT_URL = "/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static"
