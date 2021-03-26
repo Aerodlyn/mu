@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     "crispy_forms",
+    "extra_views",
     "rest_framework",
 
     "forum.apps.ForumConfig",
@@ -117,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Login settings
 # Login/logout
 LOGIN_REDIRECT_URL = "/"
-LOGIN_URL = "/user/login"
+LOGIN_URL = "/users/login"
 LOGOUT_REDIRECT_URL = "/"
 
 # Internationalization

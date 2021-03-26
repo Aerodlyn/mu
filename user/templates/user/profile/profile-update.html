@@ -14,6 +14,17 @@
     <div class = "m-3">
         <form class = "container needs-validation" method = "POST" action = "{% url 'profile-update' request.user.username %}" enctype = "multipart/form-data">
             {% crispy form %}
+            {% for formset in inlines %}
+                {{ formset.management_form|crispy }}
+                {% for f in formset %}
+                    {% for hidden in f.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    {% crispy f %}
+                {% endfor %}
+            {% endfor %}
+
+            <input class = "btn btn-primary w-100 my-3" type = "submit" value = "Update" />
         </form>
     </div>
 {% endblock content %}

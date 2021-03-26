@@ -11,7 +11,12 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.models import User
-from django.forms import ModelForm
+from django.forms import (
+    EmailField,
+    ModelForm
+)
+
+from extra_views import InlineFormSetFactory
 
 from .models import Profile
 
@@ -63,6 +68,7 @@ class MuUserCreationForm (UserCreationForm):
 
         return user
 
+# Profile Related Forms
 class ProfileUpdateForm (ModelForm):
     class Meta:
         fields  : list      = [ "avatar", "bio", "private" ]
@@ -79,11 +85,32 @@ class ProfileUpdateForm (ModelForm):
         helper.layout = Layout (
             Field ("bio", wrapper_class = "row mb-3"),
             Field ("avatar", wrapper_class = "row mb-3"),
-            Field ("private", wrapper_class = "d-flex flex-row-reverse justify-content-between mb-3"),
-            ButtonHolder (
-                Submit ("update-profile", "Update"),
-                css_class = "row"
-            )
+            Field ("private", wrapper_class = "d-flex flex-row-reverse justify-content-between mb-3")
+        )
+
+        return helper
+
+class ProfileInlineFormSet (InlineFormSetFactory):
+    form_class  : ProfileUpdateForm = ProfileUpdateForm
+    model       : Profile           = Profile
+
+class UserUpdateForm (ModelForm):
+    class Meta:
+        fields  : list  = [ "email" ]
+        model   : User  = User
+
+    email: EmailField = EmailField (help_text = "Note that this is private, and will not be shared", required = False)
+
+    @property
+    def helper (self) -> FormHelper:
+        helper = FormHelper ()
+        helper.form_tag = False
+
+        helper.label_class = "col-sm-2 col-form-label"
+        helper.field_class = "col-sm"
+
+        helper.layout = Layout (
+            Field ("email", wrapper_class = "row mb-3")
         )
 
         return helper
