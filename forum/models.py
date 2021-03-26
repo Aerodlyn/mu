@@ -22,6 +22,7 @@ class Community (Model):
 
     # Override
     def save (self, *args: list, **kwargs: dict):
+        # TODO: Create member group and moderator group
         self.slug = slugify (self.name)
         super ().save (*args, **kwargs)
 # End Community Model
