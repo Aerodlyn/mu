@@ -99,7 +99,7 @@ class UserUpdateForm (ModelForm):
         fields  : list  = [ "email" ]
         model   : User  = User
 
-    email: EmailField = EmailField (help_text = "Note that this is private, and will not be shared", required = False)
+    email: EmailField = EmailField (help_text = "Note that this is private, and will not be shared.", required = False)
 
     @property
     def helper (self) -> FormHelper:
