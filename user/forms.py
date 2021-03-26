@@ -79,7 +79,7 @@ class ProfileUpdateForm (ModelForm):
         helper.layout = Layout (
             Field ("bio", wrapper_class = "row mb-3"),
             Field ("avatar", wrapper_class = "row mb-3"),
-            Field ("private", wrapper_class = "row mb-3"),
+            Field ("private", wrapper_class = "d-flex flex-row-reverse justify-content-between mb-3"),
             ButtonHolder (
                 Submit ("update-profile", "Update"),
                 css_class = "row"
