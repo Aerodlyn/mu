@@ -9,32 +9,36 @@
 {% block subheader_title %}
     {% if request.user.is_authenticated and request.user == object.user %}
         Your profile
-    {% else %}
+    {% elif not object.private %}
         {{ object.user.username }}'s profile
+    {% else %}
+        {{ object.user.username }}'s profile is private!
     {% endif %}
 {% endblock subheader_title %}
 
 {% block content %}
     <div class = "m-3">
-    <div class = "container">
-        <div class = "row gy-3">
-            <div class = "col-sm">
-                <div class = "card">
-                    {% if object.avatar %}
-                        <img src = "{{ object.avatar.url }}" class = "card-img-top">
-                    {% endif %}
-                    <div class = "card-body">
-                        <p class = "text-muted">{{ object.user.username }}'s bio</p>
-                        <p class = "card-text text-pre-line">{{ object.bio|default_if_none:"Nothing here yet!" }}</p>
+        <div class = "container">
+            {% if not object.private or request.user == object.user %}
+                <div class = "row gy-3">
+                    <div class = "col-sm">
+                        <div class = "card">
+                            {% if object.avatar %}
+                                <img src = "{{ object.avatar.url }}" class = "card-img-top">
+                            {% endif %}
+                            <div class = "card-body">
+                                <p class = "text-muted">{{ object.user.username }}'s bio</p>
+                                <p class = "card-text text-pre-line">{{ object.bio|default_if_none:"Nothing here yet!" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class = "col-sm">
+                        <h3>Posts by {{ object.user.username }}</h3>
+                        <p>Pretty empty around here...</p>
                     </div>
                 </div>
-            </div>
-
-            <div class = "col-sm">
-                <h3>Posts by {{ object.user.username }}</h3>
-                <p>Pretty empty around here...</p>
-            </div>
+            {% endif %}
         </div>
-    </div>
     </div>
 {% endblock content %}
