@@ -20,6 +20,22 @@
         <div class = "collapse navbar-collapse" id = "navbar-supported-content">
             <ul class = "navbar-nav me-auto mb-2 mb-lg-0">
                 {% with url_name=request.resolver_match.url_name %}
+                    {% if url_name == "community-list" %}
+                        <li class = "nav-item">
+                            <a
+                                class = "nav-link active"
+                                aria-current = "page"
+                                href = "{% url 'community-list' %}"
+                                >
+                                Communities
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class = "nav-item">
+                            <a class = "nav-link" href = "{% url 'community-list' %}">Communities</a>
+                        </li>
+                    {% endif %}
+
                     {% if request.user.is_authenticated %}
                         {% if url_name == "profile-view" and object.user == request.user %}
                             <li class = "nav-item">

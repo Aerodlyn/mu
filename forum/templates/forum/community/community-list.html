@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+
+{% block subheader_title %}
+    All communities
+{% endblock subheader_title %}
+
+{% block content %}
+    {% for community in object_list %}
+        <p>{{ community.name }}</p>
+    {% endfor %}
+{% endblock content %}
