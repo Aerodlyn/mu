@@ -26,7 +26,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path ("favicon.ico", RedirectView.as_view (url = staticfiles_storage.url ("favicon.ico"))),
     path ("", include ("forum.urls")),
-    path ("user/", include ("user.urls")),
+    path ("users/", include ("user.urls")),
 
     path ("admin/", admin.site.urls)
 ] + static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
