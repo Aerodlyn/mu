@@ -37,7 +37,7 @@
                     {% endif %}
 
                     {% if request.user.is_authenticated %}
-                        {% if url_name == "profile-view" and object.user == request.user %}
+                        {% if url_name == "profile-view" and object.user == request.user or url_name == "profile-update" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
