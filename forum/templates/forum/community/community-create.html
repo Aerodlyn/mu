@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block subheader_buttons %}
+    <a class = "btn btn-outline-secondary" href = "{% url 'community-list' %}">Cancel</a>
+{% endblock subheader_buttons %}
+
+{% block subheader_title %}
+    Create new community
+{% endblock subheader_title %}
+
+{% block content %}
+    <div class = "m-3">
+        {% crispy form %}
+    </div>
+{% endblock content %}
