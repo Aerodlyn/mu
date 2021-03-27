@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block subheader_buttons %}
-    <a class = "btn btn-primary" href = "{% url 'profile-view' request.user.username %}">Cancel</a>
+    <a class = "btn btn-outline-secondary" href = "{% url 'profile-view' request.user.username %}">Cancel</a>
 {% endblock subheader_buttons %}
 
 {% block subheader_title %}
@@ -24,7 +24,9 @@
                 {% endfor %}
             {% endfor %}
 
-            <input class = "btn btn-primary w-100 my-3" type = "submit" value = "Update" />
+            <div class = "row mb-3">
+                <input class = "btn btn-primary" type = "submit" value = "Update" />
+            </div>
         </form>
     </div>
 {% endblock content %}
