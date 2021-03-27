@@ -6,14 +6,17 @@ from django.db.models import (
     TextField
 )
 from django.template.defaultfilters import slugify
+from django.urls import reverse
+
+from .validators import validate_against_blacklist
 
 # Community Model
 class Community (Model):
     class Meta:
         verbose_name_plural: str = "communities"
 
-    name        : CharField     = CharField (max_length = 64, primary_key = True)
-    description : TextField     = TextField ()
+    name        : CharField     = CharField (max_length = 64, primary_key = True, validators = [ validate_against_blacklist ([ "new" ]) ])
+    description : TextField     = TextField (blank = True, null = True)
     private     : BooleanField  = BooleanField (default = False)
     slug        : SlugField     = SlugField (editable = False)
 
@@ -21,6 +24,9 @@ class Community (Model):
         return f"{ self.name }: /communities/{ self.slug }"
 
     # Override
+    def get_absolute_url (self) -> str:
+        return reverse ("community-view", kwargs = { "slug": self.slug })
+
     def save (self, *args: list, **kwargs: dict):
         # TODO: Create member group and moderator group
         self.slug = slugify (self.name)
