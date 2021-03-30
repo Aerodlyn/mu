@@ -25,7 +25,7 @@ class Community (Model):
 
     # Override
     def get_absolute_url (self) -> str:
-        return reverse ("community-view", kwargs = { "slug": self.slug })
+        return reverse ("community-detail", kwargs = { "slug": self.slug })
 
     def save (self, *args: list, **kwargs: dict):
         # TODO: Create member group and moderator group

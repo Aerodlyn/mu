@@ -1,0 +1,29 @@
+{% extends "base/base.html" %}
+
+{% block sidebar_title %}
+    {{ object.name }}
+{% endblock sidebar_title %}
+
+{% block sidebar_content %}
+    <p class = "text-pre-line">{{ object.description }}</p>
+{% endblock sidebar_content %}
+
+{% block subheader_buttons %}
+    <button
+        class = "btn btn-outline-secondary"
+        type = "button"
+        data-bs-toggle = "offcanvas"
+        data-bs-target = "#sidebar"
+        aria-controls = "sidebar"
+        >
+        Info
+    </button>
+{% endblock subheader_buttons %}
+
+{% block subheader_title %}
+    {{ object.name }}
+{% endblock subheader_title %}
+
+{% block content %}
+
+{% endblock content %}
