@@ -6,7 +6,7 @@
 {% block subheader %}{% endblock subheader %}
 
 {% block content %}
-    <div class = "d-flex flex-column align-items-center mx-3">
+    <div class = "d-flex flex-column align-items-center">
         <img class = "my-3" src = "{% static 'images/logo-no-text.png'%}" width = "100" height = "100">
         <form class = "container needs-validation" method = "POST" action = "{% url 'user-signup' %}">
             {% crispy form %}
