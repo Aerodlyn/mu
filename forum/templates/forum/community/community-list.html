@@ -26,7 +26,10 @@
     <div class = "list-group">
         {% for community in object_list %}
             <a class = "list-group-item list-group-item-action" href = "{% url 'community-detail' community.slug %}">
-                {{ community.name }}
+                <div class = "d-flex justify-content-between">
+                    <p class = "text-truncate m-0">{{ community.name }}</p>
+                    <span class = "badge rounded-pill bg-primary">Members: {{ community.get_member_count }}</span>
+                </div>
             </a>
         {% endfor %}
     </div>

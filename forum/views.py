@@ -3,6 +3,8 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin
 )
 from django.db.models.functions import Lower
+from django.forms import BaseForm
+from django.http import HttpResponse
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -15,6 +17,11 @@ class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateVi
     permission_required : str                   = "forum.add_community"
     template_name       : str                   = "forum/community/community-create.html"
     form_class          : CommunityCreateForm   = CommunityCreateForm
+
+    # Override
+    def form_valid (self, form: BaseForm) -> HttpResponse:
+        form.instance.created_by = self.request.user
+        return super ().form_valid (form)
     
 class CommunityDetailView (DetailView):
     template_name   : str       = "forum/community/community-detail.html"
