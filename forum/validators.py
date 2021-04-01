@@ -1,23 +1,24 @@
 from collections.abc import Iterable
 
 from django.core.exceptions import ValidationError
+from django.utils.deconstruct import deconstructible
 
 from typing import Callable
 
-def validate_against_blacklist (blacklist: Iterable [str]) -> Callable [[str], None]:
+@deconstructible
+class ValidateAgainstBlacklist (object):
     """
-    Returns a validator function that checks if a given string is contained within the given
-    blacklist, raising a ValidationError if so.
+    Validator that checks given values against a list that serves as a blacklist, raising a
+    ValidationError if that value is in the list.
+    """
+    def __init__ (self, blacklist: Iterable [str]):
+        self.blacklist = blacklist
 
-    blacklist -- The blacklist of string values that should not be allowed
-    """
-    def validator (value: str):
+    def __call__ (self, value: str):
         """
-        Validator function that raises a ValidationError if the given value is contained in the
-        given blacklist used in the construction of this function.
+        Raises a ValidationError if the given value is contained in the blacklist.
 
         value -- The value to check against a blacklist
         """
-        if value in blacklist:
+        if value in self.blacklist:
             raise ValidationError ("Prohibited value", params = { "value": value })
-    return validator
