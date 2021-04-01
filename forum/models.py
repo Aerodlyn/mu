@@ -69,6 +69,8 @@ class Community (Model):
                 member_group.user_set.add (self.created_by)
                 moderator_group.user_set.add (self.created_by)
         except IntegrityError:
+            # Description and/or Private is/are the only things changing, so new groups are not
+            # needed
             pass
 
         self.slug = slugify (self.name)
