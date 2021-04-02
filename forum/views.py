@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin
 )
+from django.contrib.auth.models import Group
 from django.db.models.functions import Lower
 from django.forms import BaseForm
 from django.http import HttpResponse
@@ -23,9 +24,17 @@ class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateVi
         form.instance.created_by = self.request.user
         return super ().form_valid (form)
     
-class CommunityDetailView (DetailView):
+class CommunityDetailView (PermissionRequiredMixin, DetailView):
     template_name   : str       = "forum/community/community-detail.html"
-    model           : Community = Community
+    model           : Community = Community    
+
+    # Override
+    def has_permission (self) -> bool:
+        return not self.get_object ().private or self.is_request_user_member ()
+
+    def is_request_user_member (self) -> bool:
+        """See Community.is_user_member"""
+        return self.get_object ().is_user_member (self.request.user)
 
 class CommunityListView (ListView):
     paginate_by     : int       = 10

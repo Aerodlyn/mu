@@ -27,7 +27,14 @@
         {% include "header/header.html" %}
 
         {% block subheader %}
+            {% comment %} TODO: How to arrange these. {% endcomment %}
             <subheader class = "d-flex align-items-center justify-content-between bg-light border-top border-bottom p-3">
+                {% block subheader_image %}
+                    {% if image %}
+                        <img class = "me-1" src = "{{ image.url }}" height = "32">
+                    {% endif %}
+                {% endblock %}
+                
                 <h4 class = "m-0 text-truncate">{% block subheader_title %}{% endblock %}</h4>
 
                 <div class = "d-flex">

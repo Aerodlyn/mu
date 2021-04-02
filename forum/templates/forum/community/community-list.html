@@ -28,7 +28,13 @@
             <a class = "list-group-item list-group-item-action" href = "{% url 'community-detail' community.slug %}">
                 <div class = "d-flex justify-content-between">
                     <p class = "text-truncate m-0">{{ community.name }}</p>
-                    <span class = "badge rounded-pill bg-primary">Members: {{ community.get_member_count }}</span>
+                    <span>
+                        {% if community.private %}
+                            <span class = "badge rounded-pill bg-danger">Private</span>
+                        {% endif %}
+                        
+                        <span class = "badge rounded-pill bg-primary">Members: {{ community.get_member_count }}</span>
+                    </span>
                 </div>
             </a>
         {% endfor %}

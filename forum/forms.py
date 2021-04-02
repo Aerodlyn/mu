@@ -12,7 +12,7 @@ from .models import Community
 
 class CommunityCreateForm (ModelForm):
     class Meta:
-        fields  : list      = [ "name", "description", "private" ]
+        fields  : list      = [ "name", "description", "image", "private" ]
         model   : Community = Community
 
     @property
@@ -26,6 +26,7 @@ class CommunityCreateForm (ModelForm):
         helper.layout = Layout (
             Field ("name", wrapper_class = "row mb-3"),
             Field ("description", wrapper_class = "row mb-3"),
+            Field ("image", wrapper_class = "row mb-3"),
             Field ("private", wrapper_class = "d-flex flex-row-reverse justify-content-between mb-3"),
             ButtonHolder (
                 Submit ("create", "Create"),

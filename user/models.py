@@ -11,8 +11,8 @@ from django.urls import reverse_lazy
 
 # Profile Model
 def user_directory_path(instance, filename: str) -> str:
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return f"user_{ instance.user.username }/{ filename }"
+    # file will be uploaded to MEDIA_ROOT/user/<id>/<filename>
+    return f"user/{ instance.user.username }/{ filename }"
 
 class Profile (Model):
     private : BooleanField  = BooleanField (default = True)

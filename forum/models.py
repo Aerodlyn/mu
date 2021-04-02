@@ -11,6 +11,7 @@ from django.db.models import (
     BooleanField,
     CharField,
     ForeignKey,
+    ImageField,
     Model,
     SlugField,
     TextField
@@ -27,6 +28,9 @@ from typing import (
 from .validators import ValidateAgainstBlacklist
 
 # Community Model
+def community_directory_path (instance, filename: str) -> str:
+    return f"community/{ instance.slug }/{ filename }"
+
 class Community (Model):
     class Meta:
         verbose_name_plural: str = "communities"
@@ -38,6 +42,11 @@ class Community (Model):
                                   )
     description : TextField     = TextField (blank = True, null = True)
     private     : BooleanField  = BooleanField (default = False)
+    image       : ImageField    = ImageField (
+                                    upload_to = community_directory_path,
+                                    blank = True,
+                                    null = True
+                                  )
     slug        : SlugField     = SlugField (editable = False)
     created_by  : ForeignKey    = ForeignKey (User, null = True, on_delete = SET_NULL)
 
@@ -50,8 +59,8 @@ class Community (Model):
         using: str = DEFAULT_DB_ALIAS,
         keep_parents: bool = False
     ) -> Tuple [int, Dict [str, int]]:
-        Group.objects.get (name = f"{ self.name }: members").delete ()
-        Group.objects.get (name = f"{ self.name }: moderators").delete ()
+        Group.objects.get (name = f"{ self.slug }: members").delete ()
+        Group.objects.get (name = f"{ self.slug }: moderators").delete ()
 
         return super ().delete (using, keep_parents)
 
@@ -61,10 +70,11 @@ class Community (Model):
 
     # Override
     def save (self, *args: list, **kwargs: dict):
+        self.slug = slugify (self.name)
         try:
             with transaction.atomic ():
-                member_group = Group.objects.create (name = f"{ self.name }: members")
-                moderator_group = Group.objects.create (name = f"{ self.name }: moderators")
+                member_group = Group.objects.create (name = f"{ self.slug }: members")
+                moderator_group = Group.objects.create (name = f"{ self.slug }: moderators")
 
                 member_group.user_set.add (self.created_by)
                 moderator_group.user_set.add (self.created_by)
@@ -73,10 +83,33 @@ class Community (Model):
             # needed
             pass
 
-        self.slug = slugify (self.name)
         super ().save (*args, **kwargs)
+
+    def is_user_member (self, user: User) -> bool:
+        """
+        If the user is part of the <community slug: members> group, then they are a member of this
+        community.
+
+        user -- The user to check if they are a member of this community's member group
+        """
+        return self.get_member_group ().user_set.filter (username = user.username).exists ()
+
+    def is_user_moderator (self, user: User) -> bool:
+        """
+        If the user is part of the <community slug: moderators> group, then they are a member of
+        this community.
+
+        user -- The user to check if they are a member of this community's moderator group
+        """
+        return self.get_moderator_group ().user_set.filter (username = user.username).exists ()
 
     def get_member_count (self) -> int:
         """Returns the current count of members for this Community."""
-        return len (Group.objects.get (name = f"{ self.name }: members").user_set.all ())
+        return len (self.get_member_group ().user_set.all ())
+
+    def get_member_group (self) -> Group:
+        return Group.objects.get (name = f"{ self.slug }: members")
+
+    def get_moderator_group (self) -> Group:
+        return Group.objects.get (name = f"{ self.slug }: moderators")
 # End Community Model

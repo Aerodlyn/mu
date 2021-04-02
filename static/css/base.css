@@ -8,6 +8,17 @@
     max-width: 100% !important;
 }
 
+/* mu defined */
+body {
+    /* background-image: radial-gradient(#212121 15%, transparent 15%);
+    background-size: 10px 10px; */
+    /* background:
+        linear-gradient(90deg, white 20px, transparent 1%) center,
+        linear-gradient(white 20px, transparent 1%) center,
+        black;
+    background-size: 22px 22px; */
+}
+
 .profile-img {
     max-width: 96px;
     max-height: 96px;
