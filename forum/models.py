@@ -7,6 +7,7 @@ from django.db import (
     transaction
 )
 from django.db.models import (
+    CASCADE,
     SET_NULL,
     BooleanField,
     CharField,
@@ -59,8 +60,8 @@ class Community (Model):
         using: str = DEFAULT_DB_ALIAS,
         keep_parents: bool = False
     ) -> Tuple [int, Dict [str, int]]:
-        Group.objects.get (name = f"{ self.slug }: members").delete ()
-        Group.objects.get (name = f"{ self.slug }: moderators").delete ()
+        self.get_member_group ().delete () # Group.objects.get (name = f"{ self.slug }: members").delete ()
+        self.get_moderator_group ().delete () # Group.objects.get (name = f"{ self.slug }: moderators").delete ()
 
         return super ().delete (using, keep_parents)
 
@@ -73,11 +74,7 @@ class Community (Model):
         self.slug = slugify (self.name)
         try:
             with transaction.atomic ():
-                member_group = Group.objects.create (name = f"{ self.slug }: members")
-                moderator_group = Group.objects.create (name = f"{ self.slug }: moderators")
-
-                member_group.user_set.add (self.created_by)
-                moderator_group.user_set.add (self.created_by)
+                self.add_user (self.created_by, True)
         except IntegrityError:
             # Description and/or Private is/are the only things changing, so new groups are not
             # needed
@@ -108,8 +105,43 @@ class Community (Model):
         return len (self.get_member_group ().user_set.all ())
 
     def get_member_group (self) -> Group:
-        return Group.objects.get (name = f"{ self.slug }: members")
+        return Group.objects.get_or_create (name = f"{ self.slug }: members") [0]
 
     def get_moderator_group (self) -> Group:
-        return Group.objects.get (name = f"{ self.slug }: moderators")
+        return Group.objects.get_or_create (name = f"{ self.slug }: moderators") [0]
+
+    def add_user (self, user: User, include_moderator: bool = False) -> None:
+        """
+        Adds the given user to the members group for this Community, and to the moderator group if
+        `include_moderator` is True.
+
+        user -- The User to add to the members  
+        include_moderator -- True to also add the user to the moderators group, otherwise ignore
+        """
+        self.get_member_group ().user_set.add (user)
+        if include_moderator:
+            self.get_moderator_group ().user_set.add (user)
+
+    def remove_user (self, user: User) -> None:
+        """
+        Removes the given user from both the members and moderators groups for this Community.
+
+        user -- The User to remove from both membership groups
+        """
+        self.get_member_group ().user_set.remove (user)
+        self.get_moderator_group ().user_set.remove (user)
 # End Community Model
+
+# Post Model
+class Post (Model):
+    title       : CharField     = CharField (max_length = 512)
+    content     : TextField     = TextField ()
+    slug        : SlugField     = SlugField (editable = False)
+    created_by  : ForeignKey    = ForeignKey (User, null = True, on_delete = SET_NULL)
+    posted_in   : ForeignKey    = ForeignKey (Community, on_delete = CASCADE)
+
+    # Override
+    def save (self, *args: list, **kwargs: dict):
+        self.slug = slugify (self.title)
+        super ().save (*args, **kwargs)
+# End Post Model

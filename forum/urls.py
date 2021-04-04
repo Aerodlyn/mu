@@ -5,7 +5,8 @@ from .views import (
     CommunityCreateView,
     CommunityDetailView,
     CommunityListView,
-    IndexView
+    IndexView,
+    update_user_community_membership
 )
 
 urlpatterns = [
@@ -14,5 +15,6 @@ urlpatterns = [
     # Communities Views
     path ("communities", CommunityListView.as_view (), name = "community-list"),
     path ("communities/new", CommunityCreateView.as_view (), name = "community-create"),
-    path ("communities/<slug:slug>", CommunityDetailView.as_view (), name = "community-detail")
+    path ("communities/<slug:slug>", CommunityDetailView.as_view (), name = "community-detail"),
+    path ("communities/<slug:slug>/update-membership", update_user_community_membership, name = "community-update-membership")
 ]

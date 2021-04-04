@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin
@@ -5,7 +6,14 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.models import Group
 from django.db.models.functions import Lower
 from django.forms import BaseForm
-from django.http import HttpResponse
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect
+)
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -14,6 +22,7 @@ from django.views.generic.list import ListView
 from .forms import CommunityCreateForm
 from .models import Community
 
+# Community-related views
 class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required : str                   = "forum.add_community"
     template_name       : str                   = "forum/community/community-create.html"
@@ -43,5 +52,17 @@ class CommunityListView (ListView):
 
     model           : Community = Community
 
+@login_required
+@require_POST
+def update_user_community_membership (request: HttpRequest, slug: str) -> HttpResponse:
+    community: Community = get_object_or_404 (Community, slug = slug)
+    if community.is_user_member (request.user):
+        community.remove_user (request.user)
+    else:
+        community.add_user (request.user)
+
+    return HttpResponseRedirect (reverse ("community-detail", kwargs = { "slug": slug }))
+
+# Etc. views
 class IndexView (TemplateView):
     template_name: str = "forum/index.html"
