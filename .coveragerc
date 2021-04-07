@@ -1,0 +1,9 @@
+[run]
+branch = True
+command_line = manage.py test
+omit =
+    .venv/*
+    */migrations/*
+    */__init__.py
+    manage.py
+    */settings.py
