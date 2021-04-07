@@ -25,28 +25,28 @@ urlpatterns = [
             authentication_form = MuAuthenticationForm,
             template_name = "user/login/login.html"
         ),
-        name = "user-login"
+        name = "login"
     ),
     path (
         "logout",
         LogoutView.as_view (),
-        name = "user-logout"
+        name = "logout"
     ),
     path (
         "signup",
         CreateView.as_view (
             form_class = MuUserCreationForm,
             template_name = "user/signup/signup.html",
-            success_url = reverse_lazy ("user-login")
+            success_url = reverse_lazy ("user:login")
         ),
-        name = "user-signup"
+        name = "signup"
     ),
     
     # Profile views
     path (
         "<str:username>",
         ProfileDetailView.as_view (),
-        name = "profile-view"
+        name = "profile-detail"
     ),
     path (
         "<str:username>/edit",

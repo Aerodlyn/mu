@@ -2,7 +2,7 @@
 
 {% block subheader_buttons %}
     {% if request.user.is_authenticated and request.user == object.user %}
-        <a class = "btn btn-light" href = "{% url 'profile-update' request.user.username %}" title = "Edit profile">
+        <a class = "btn btn-light" href = "{% url 'user:profile-update' request.user.username %}" title = "Edit profile">
             <!-- https://icons.getbootstrap.com/icons/pencil-square/ -->
             <svg
                 xmlns = "http://www.w3.org/2000/svg"

@@ -25,5 +25,5 @@ class Profile (Model):
 
     # Override
     def get_absolute_url (self):
-        return reverse_lazy ("profile-view", kwargs = { "username": self.user.username })
+        return reverse_lazy ("user:profile-detail", kwargs = { "username": self.user.username })
 # End Profile Model

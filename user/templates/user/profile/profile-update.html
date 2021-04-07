@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block subheader_buttons %}
-    <a class = "btn btn-outline-secondary" href = "{% url 'profile-view' request.user.username %}">Cancel</a>
+    <a class = "btn btn-outline-secondary" href = "{% url 'user:profile-detail' request.user.username %}">Cancel</a>
 {% endblock subheader_buttons %}
 
 {% block subheader_title %}
@@ -11,7 +11,7 @@
 {% endblock subheader_title %}
 
 {% block content %}
-    <form class = "container needs-validation" method = "POST" action = "{% url 'profile-update' request.user.username %}" enctype = "multipart/form-data">
+    <form class = "container needs-validation" method = "POST" action = "{% url 'user:profile-update' request.user.username %}" enctype = "multipart/form-data">
         {% crispy form %}
         {% for formset in inlines %}
             {{ formset.management_form|crispy }}

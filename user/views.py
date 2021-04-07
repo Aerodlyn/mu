@@ -20,7 +20,7 @@ from .forms import (
 from .models import Profile
 
 class ProfileDetailView (DetailView):
-    template_name   : str       = "user/profile/profile-view.html"
+    template_name   : str       = "user/profile/user:profile-detail.html"
     model           : Profile   = Profile
 
     # Override
@@ -32,24 +32,27 @@ class ProfileDetailView (DetailView):
 
 class ProfileUpdateView (LoginRequiredMixin, UpdateWithInlinesView):
     inlines         : list              = [ ProfileInlineFormSet ]
-    template_name   : str               = "user/profile/profile-update.html"
+    template_name   : str               = "user/profile/user:profile-update.html"
 
     form_class      : UserUpdateForm    = UserUpdateForm
     model           : User              = User
 
     # Override
     def get_success_url (self, *args: list, **kwargs: dict) -> str:
-        return reverse_lazy ("profile-view", kwargs = { "username": self.request.user.username })
+        return reverse_lazy (
+            "user:profile-detail",
+            kwargs = { "username": self.request.user.username }
+        )
 
     # Override
-    def get (self, request: HttpRequest, *args: tuple, **kwargs: list) -> HttpResponse:
+    def get (self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         if request.user.is_authenticated and kwargs ["username"] != request.user.username:
             return HttpResponseRedirect (self.get_success_url ())
         return super ().get (request, *args, **kwargs)
 
+    # Override
     def get_object (self, queryset: QuerySet = None) -> User:
         if queryset is None:
             queryset = self.get_queryset ()
 
-        # return get_object_or_404 (queryset, user = self.request.user)
         return queryset.get (pk = self.request.user.pk)
