@@ -1,9 +1,10 @@
-from collections.abc import Iterable
-
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
-from typing import Callable
+from typing import (
+    Callable,
+    Iterable
+)
 
 @deconstructible
 class ValidateAgainstBlacklist (object):
