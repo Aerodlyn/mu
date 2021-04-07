@@ -20,7 +20,7 @@ from .forms import (
 from .models import Profile
 
 class ProfileDetailView (DetailView):
-    template_name   : str       = "user/profile/user:profile-detail.html"
+    template_name   : str       = "user/profile/profile-detail.html"
     model           : Profile   = Profile
 
     # Override
@@ -32,7 +32,7 @@ class ProfileDetailView (DetailView):
 
 class ProfileUpdateView (LoginRequiredMixin, UpdateWithInlinesView):
     inlines         : list              = [ ProfileInlineFormSet ]
-    template_name   : str               = "user/profile/user:profile-update.html"
+    template_name   : str               = "user/profile/profile-update.html"
 
     form_class      : UserUpdateForm    = UserUpdateForm
     model           : User              = User
