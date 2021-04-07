@@ -19,6 +19,12 @@
 
         <div class = "collapse navbar-collapse" id = "navbar-supported-content">
             <ul class = "navbar-nav me-auto mb-2 mb-lg-0">
+                {% if request.user.is_superuser %}
+                    <li class = "nav-item">
+                        <a class = "nav-link" href = "{% url 'admin:index' %}" target = "_blank">Admin</a>
+                    </li>
+                {% endif %}
+                
                 {% with url_name=request.resolver_match.url_name %}
                     {% if url_name == "community-list" %}
                         <li class = "nav-item">
@@ -37,67 +43,67 @@
                     {% endif %}
 
                     {% if request.user.is_authenticated %}
-                        {% if url_name == "profile-view" and object.user == request.user or url_name == "profile-update" %}
+                        {% if url_name == "user:profile-detail" and object.user == request.user or url_name == "user:profile-update" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
                                     aria-current = "page"
-                                    href = "{% url 'profile-view' request.user.username %}"
+                                    href = "{% url 'user:profile-detail' request.user.username %}"
                                     >
                                     Profile
                                 </a>
                             </li>
                         {% else %}
                             <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'profile-view' request.user.username %}">Profile</a>
+                                <a class = "nav-link" href = "{% url 'user:profile-detail' request.user.username %}">Profile</a>
                             </li>
                         {% endif %}
 
-                        {% if url_name == "user-logout" %}
+                        {% if url_name == "user:logout" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
                                     aria-current = "page"
-                                    href = "{% url 'user-logout' %}"
+                                    href = "{% url 'user:logout' %}"
                                     >
                                     Log out
                                 </a>
                             </li>
                         {% else %}
                             <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'user-logout' %}">Log out</a>
+                                <a class = "nav-link" href = "{% url 'user:logout' %}">Log out</a>
                             </li>
                         {% endif %}
                     {% else %}
-                        {% if url_name == "user-login" %}
+                        {% if url_name == "user:login" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
                                     aria-current = "page"
-                                    href = "{% url 'user-login' %}"
+                                    href = "{% url 'user:login' %}"
                                     >
                                     Log in
                                 </a>
                             </li>
                         {% else %}
                             <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'user-login' %}">Log in</a>
+                                <a class = "nav-link" href = "{% url 'user:login' %}">Log in</a>
                             </li>
                         {% endif %}
 
-                        {% if url_name == "user-signup" %}
+                        {% if url_name == "user:signup" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
                                     aria-current = "page"
-                                    href = "{% url 'user-signup' %}"
+                                    href = "{% url 'user:signup' %}"
                                     >
                                     Sign up
                                 </a>
                             </li>
                         {% else %}
                             <li class = "nav-item">
-                                <a class = "nav-link" href = "{% url 'user-signup' %}">Sign up</a>
+                                <a class = "nav-link" href = "{% url 'user:signup' %}">Sign up</a>
                             </li>
                         {% endif %}
                     {% endif %}
