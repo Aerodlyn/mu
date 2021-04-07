@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv ("SECRET_KEY", get_random_secret_key ())
 DEBUG = strtobool (os.getenv ("DEBUG", "false"))
 
 ALLOWED_HOSTS = os.getenv ("ALLOWED_HOSTS", "").split ()
-
+ADMIN_URL = os.getenv ("ADMIN_URL", "admin/")
 
 # Application definition
 INSTALLED_APPS = [
