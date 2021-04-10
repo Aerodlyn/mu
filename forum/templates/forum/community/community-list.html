@@ -2,7 +2,7 @@
 
 {% block subheader_buttons %}
     {% if request.user.is_authenticated %}
-        <a class = "btn btn-light" href = "{% url 'community-create' %}" title = "Create new community">
+        <a class = "btn btn-light" href = "{% url 'forum:community-create' %}" title = "Create new community">
             <!-- https://icons.getbootstrap.com/icons/plus/ -->
             <svg
                 xmlns = "http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@
 {% block content %}
     <div class = "list-group">
         {% for community in object_list %}
-            <a class = "list-group-item list-group-item-action" href = "{% url 'community-detail' community.slug %}">
+            <a class = "list-group-item list-group-item-action" href = "{{ community.get_absolute_url }}">
                 <div class = "d-flex justify-content-between">
                     <p class = "text-truncate m-0">{{ community.name }}</p>
                     <span>

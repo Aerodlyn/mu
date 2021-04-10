@@ -2,7 +2,7 @@
 
 <nav class = "navbar navbar-expand-lg navbar-light bg-light">
     <div class = "container-fluid">
-        <a class = "navbar-brand" href = "{% url 'index' %}">
+        <a class = "navbar-brand" href = "{% url 'forum:index' %}">
             <img src = "{% static 'images/logo.png' %}" alt = "mu brand" width = "64" height = "64">
         </a>
         <button
@@ -31,19 +31,19 @@
                             <a
                                 class = "nav-link active"
                                 aria-current = "page"
-                                href = "{% url 'community-list' %}"
+                                href = "{% url 'forum:community-list' %}"
                                 >
                                 Communities
                             </a>
                         </li>
                     {% else %}
                         <li class = "nav-item">
-                            <a class = "nav-link" href = "{% url 'community-list' %}">Communities</a>
+                            <a class = "nav-link" href = "{% url 'forum:community-list' %}">Communities</a>
                         </li>
                     {% endif %}
 
                     {% if request.user.is_authenticated %}
-                        {% if url_name == "user:profile-detail" and object.user == request.user or url_name == "user:profile-update" %}
+                        {% if url_name == "profile-detail" and object.user == request.user or url_name == "profile-update" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
@@ -59,7 +59,7 @@
                             </li>
                         {% endif %}
 
-                        {% if url_name == "user:logout" %}
+                        {% if url_name == "logout" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
@@ -75,7 +75,7 @@
                             </li>
                         {% endif %}
                     {% else %}
-                        {% if url_name == "user:login" %}
+                        {% if url_name == "login" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
@@ -91,7 +91,7 @@
                             </li>
                         {% endif %}
 
-                        {% if url_name == "user:signup" %}
+                        {% if url_name == "signup" %}
                             <li class = "nav-item">
                                 <a
                                     class = "nav-link active"
