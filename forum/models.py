@@ -11,6 +11,7 @@ from django.db.models import (
     SET_NULL,
     BooleanField,
     CharField,
+    DateTimeField,
     ForeignKey,
     ImageField,
     Model,
@@ -137,8 +138,12 @@ class Post (Model):
     title       : CharField     = CharField (max_length = 512)
     content     : TextField     = TextField ()
     slug        : SlugField     = SlugField (editable = False)
+    created_at  : DateTimeField = DateTimeField (null = False, blank = False, auto_now_add = True)
     created_by  : ForeignKey    = ForeignKey (User, null = True, on_delete = SET_NULL)
     posted_in   : ForeignKey    = ForeignKey (Community, on_delete = CASCADE)
+
+    def __str__ (self) -> str:
+        return f"{ self.title }: { self.created_by } - { self.posted_in }"
 
     # Override
     def save (self, *args: list, **kwargs: dict):
