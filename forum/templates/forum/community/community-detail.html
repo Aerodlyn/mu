@@ -9,7 +9,7 @@
 {% endblock sidebar_content %}
 
 {% block subheader_buttons %}
-    {% if request.is_authenticated %}
+    {% if request.user.is_authenticated %}
         <form action = "{% url 'community-update-membership' object.slug %}" method = "POST">
             {% csrf_token %}
             {% if view.is_request_user_member %}
@@ -93,5 +93,20 @@
 {% endblock subheader_title %}
 
 {% block content %}
+    {% for post in object_list %}
+        <div class = "card m-3">
+            <div class = "card-header">
+                {{ post.title }}
+            </div>
+            <div class = "card-body">
+                <p class = "card-text text-pre-line">{{ post.content }}</p>
+            </div>
+            <div class = "card-footer d-flex justify-content-end">
+                <a href = "{% url 'user:profile-detail' post.created_by %}">{{ post.created_by }}</a>
+                <p class = "text-muted m-0 mx-1">| {{ post.created_at|timesince }} ago</p>
+            </div>
+        </div>
+    {% endfor %}
 
+    {% include "pagination/pagination.html" %}
 {% endblock content %}

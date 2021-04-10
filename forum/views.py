@@ -17,10 +17,16 @@ from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-from django.views.generic.list import ListView
+from django.views.generic.list import (
+    ListView,
+    MultipleObjectMixin
+)
 
 from .forms import CommunityCreateForm
-from .models import Community
+from .models import (
+    Community,
+    Post
+)
 
 # Community-related views
 class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -33,13 +39,19 @@ class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateVi
         form.instance.created_by = self.request.user
         return super ().form_valid (form)
     
-class CommunityDetailView (PermissionRequiredMixin, DetailView):
+class CommunityDetailView (PermissionRequiredMixin, DetailView, MultipleObjectMixin):
+    paginate_by     : int       = 10
     template_name   : str       = "forum/community/community-detail.html"
     model           : Community = Community    
 
     # Override
     def has_permission (self) -> bool:
         return not self.get_object ().private or self.is_request_user_member ()
+
+    # Override
+    def get_context_data (self, **kwargs: dict) -> dict:
+        posts = self.get_object ().post_set.order_by ("-created_at").all ()
+        return super ().get_context_data (object_list = posts, **kwargs)
 
     def is_request_user_member (self) -> bool:
         """See Community.is_user_member"""
