@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from django.views.generic.list import MultipleObjectMixin
 
 from extra_views import UpdateWithInlinesView
 
@@ -19,9 +20,17 @@ from .forms import (
 )
 from .models import Profile
 
-class ProfileDetailView (DetailView):
+from forum.models import Post
+
+class ProfileDetailView (DetailView, MultipleObjectMixin):
+    paginate_by     : int       = 10
     template_name   : str       = "user/profile/profile-detail.html"
     model           : Profile   = Profile
+
+    # Override
+    def get_context_data (self, **kwargs: dict) -> dict:
+        posts = self.get_object ().user.post_set.order_by ("-created_at").all ()
+        return super ().get_context_data (object_list = posts, **kwargs)
 
     # Override
     def get_object (self, queryset: QuerySet = None) -> Profile:
