@@ -49,7 +49,22 @@
 
             <div class = "col-sm">
                 <h3>Posts by {{ object.user.username }}</h3>
-                <p>Pretty empty around here...</p>
+                
+                <div class = "list-group">
+                    {% for post in object_list %}
+                        <a
+                            class = "list-group-item list-group-item-action d-flex justify-content-between"
+                            href = "{{ post.get_absolute_url }}"
+                            >
+                            <p class = "text-truncate m-0">{{ post.title }}</p>
+                            <small class = "d-none d-sm-block">{{ post.created_at|timesince }} ago</small>
+                        </a>
+                    {% empty %}
+                        <p>Pretty empty around here...</p>
+                    {% endfor %}
+                </div>
+
+                {% include "pagination/pagination.html" %}
             </div>
         </div>
     {% endif %}
