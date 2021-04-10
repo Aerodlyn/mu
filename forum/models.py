@@ -61,8 +61,8 @@ class Community (Model):
         using: str = DEFAULT_DB_ALIAS,
         keep_parents: bool = False
     ) -> Tuple [int, Dict [str, int]]:
-        self.get_member_group ().delete () # Group.objects.get (name = f"{ self.slug }: members").delete ()
-        self.get_moderator_group ().delete () # Group.objects.get (name = f"{ self.slug }: moderators").delete ()
+        self.get_member_group ().delete ()
+        self.get_moderator_group ().delete ()
 
         return super ().delete (using, keep_parents)
 
