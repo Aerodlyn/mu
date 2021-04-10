@@ -16,5 +16,12 @@ urlpatterns = [
     path ("communities", CommunityListView.as_view (), name = "community-list"),
     path ("communities/new", CommunityCreateView.as_view (), name = "community-create"),
     path ("communities/<slug:slug>", CommunityDetailView.as_view (), name = "community-detail"),
-    path ("communities/<slug:slug>/update-membership", update_user_community_membership, name = "community-update-membership")
+    path ("communities/<slug:slug>/update-membership", update_user_community_membership, name = "community-update-membership"),
+
+    # Post Views
+    path (
+        "communities/<slug:community_slug>/posts/<int:post_id>/<slug:post_slug>",
+        IndexView.as_view (),
+        name = "post-detail"
+    )
 ]
