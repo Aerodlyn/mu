@@ -68,7 +68,7 @@ class Community (Model):
 
     # Override
     def get_absolute_url (self) -> str:
-        return reverse ("community-detail", kwargs = { "slug": self.slug })
+        return reverse ("forum:community-detail", kwargs = { "slug": self.slug })
 
     # Override
     def save (self, *args: list, **kwargs: dict):
@@ -144,6 +144,17 @@ class Post (Model):
 
     def __str__ (self) -> str:
         return f"{ self.title }: { self.created_by } - { self.posted_in }"
+
+    # Override
+    def get_absolute_url (self) -> str:
+        return reverse (
+            "forum:post-detail",
+            kwargs = {
+                "community_slug": self.posted_in.slug,
+                "post_id": self.id,
+                "post_slug": self.slug
+            }
+        )
 
     # Override
     def save (self, *args: list, **kwargs: dict):
