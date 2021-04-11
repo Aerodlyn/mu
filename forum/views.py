@@ -73,7 +73,7 @@ def update_user_community_membership (request: HttpRequest, slug: str) -> HttpRe
     else:
         community.add_user (request.user)
 
-    return HttpResponseRedirect (reverse ("community-detail", kwargs = { "slug": slug }))
+    return HttpResponseRedirect (reverse ("forum:community-detail", kwargs = { "slug": slug }))
 
 # Etc. views
 class IndexView (TemplateView):
