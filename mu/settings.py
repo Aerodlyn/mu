@@ -81,14 +81,10 @@ WSGI_APPLICATION = "mu.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3"
-        }
-    }
-else:
+
+# Whether or not to use RDS as the DB
+USE_RDS = os.getenv ("USE_RDS", False)
+if USE_RDS:
     DATABASES = {
         "default": {
             "ENGINE": os.getenv ("DB_ENGINE"),
@@ -97,6 +93,13 @@ else:
             "NAME": os.getenv ("DB_NAME"),
             "USER": os.getenv ("DB_USER"),
             "PASSWORD": os.getenv ("DB_PASS")
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3"
         }
     }
 
