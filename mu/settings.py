@@ -131,17 +131,35 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+# Whether or not to use S3 to store files
+USE_S3 = os.getenv ("USE_S3", False)
+if USE_S3:
+    AWS_ACCESS_KEY_ID = os.getenv ("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv ("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv ("AWS_STORAGE_BUCKET_NAME")
+    AWS_IS_GZIPPED = True
+    AWS_S3_FILE_OVERWRITE = False
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+if USE_S3:
+    STATICFILES_STORAGE = "mu.backends.StaticStorage"
+    STATIC_URL = f"https://{ AWS_STORAGE_BUCKET_NAME }.s3.amazonaws.com/static/"
+else:
+    STATIC_URL = "/static/"
+
 # Media files
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-MEDIA_ROOT
-MEDIA_ROOT = BASE_DIR / "media"
-MEDIA_URL = "/media/"
+if USE_S3:
+    DEFAULT_FILE_STORAGE = "mu.backends.MediaStorage"
+    MEDIA_URL = f"https://{ AWS_STORAGE_BUCKET_NAME }.s3.amazonaws.com/media/"
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_URL = "/media/"
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
