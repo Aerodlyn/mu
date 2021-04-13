@@ -18,31 +18,9 @@ from django.core.management.utils import get_random_secret_key
 from distutils.util import strtobool
 from pathlib import Path
 
-# https://stackoverflow.com/questions/63011195/how-to-resolve-aws-elastic-beanstalk-django-health-check-problems
-def is_ec2_linux():
-    if os.path.isfile("/sys/hypervisor/uuid"):
-        with open("/sys/hypervisor/uuid") as f:
-            uuid = f.read()
-            return uuid.startswith("ec2")
-    return False
-
-def get_token():
-    headers = {
-        'X-aws-ec2-metadata-token-ttl-seconds': '21600',
-    }
-    response = requests.put('http://169.254.169.254/latest/api/token', headers=headers)
-    return response.text
-
-
-def get_linux_ec2_private_ip():
-    if not is_ec2_linux():
-        return None
+def get_ec2_private_ip ():
     try:
-        token = get_token()
-        headers = {
-            'X-aws-ec2-metadata-token': f"{token}",
-        }
-        response = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', headers=headers)
+        response = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout = 0.01)
         return response.text
     except:
         return None
@@ -63,7 +41,7 @@ SECRET_KEY = os.getenv ("SECRET_KEY", get_random_secret_key ())
 DEBUG = strtobool (os.getenv ("DEBUG", "false"))
 
 ALLOWED_HOSTS = os.getenv ("ALLOWED_HOSTS", "").split ()
-private_ip = get_linux_ec2_private_ip ()
+private_ip = get_ec2_private_ip ()
 if private_ip:
     ALLOWED_HOSTS.append (private_ip)
 
