@@ -1,6 +1,7 @@
 # ![Logo](https://raw.githubusercontent.com/Aerodlyn/mu/develop/static/images/logo-no-text.png "mu logo") mu - the simple forum
 mu is a simple project that takes inspiration after traditional blogs and reddit. mu is powered by
-[Django](https://www.djangoproject.com) and styled using [Bootstrap](https://www.getbootstrap.com).
+[Django](https://www.djangoproject.com) and styled using [Bootstrap](https://www.getbootstrap.com).  
+Please check it out [here](https://mu.aerodlyn.io/)!
 
 ## Set up
 You will need [Python 3](https://www.python.org). I recommend using a virtual environment to avoid
