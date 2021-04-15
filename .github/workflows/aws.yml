@@ -17,10 +17,10 @@ jobs:
       with:
         python-version: "3.9"
     - run: |
-        AWS_VERSION_LABEL=${{env.APP_NAME}}-${{env.PIPELINE_ID}}
+        AWS_VERSION_LABEL=${{ env.APP_NAME }}-${{ env.JOB_ID }}
         
         python -m pip install --upgrade pip
         pip install awsebcli --upgrade
         
-        eb init -i ${{env.APP_NAME}} --region ${{env.AWS_REGION}}
-        eb deploy ${{env.APP_NAME}} --version ${AWS_VERSION_LABEL}
+        eb init -i ${{ env.APP_NAME }} --region ${{ env.AWS_REGION }}
+        eb deploy ${{ env.APP_NAME }} --version ${ AWS_VERSION_LABEL }
