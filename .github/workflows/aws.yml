@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 env:
   APP_NAME: mu
+  APP_ENVIRONMENT: mu-dev-1
   AWS_REGION: us-east-1
   PIPELINE_ID: ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}
 jobs:
@@ -27,4 +28,4 @@ jobs:
         pip install awsebcli --upgrade
         
         eb init -i ${{ env.APP_NAME }} --platform python-3.4 --region ${{ env.AWS_REGION }} -k ${{ secrets.AWS_SSH_KEY }}
-        eb deploy ${{ env.APP_NAME }} --version ${AWS_VERSION_LABEL}
+        eb deploy ${{ env.APP_ENVIRONMENT }} --version ${AWS_VERSION_LABEL}
