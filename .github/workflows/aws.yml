@@ -1,8 +1,12 @@
 name: Manual workflow
 on:
   workflow_dispatch:
+env:
+  APP_NAME: mu
+  AWS_REGION: us-east-1
+  PIPELINE_ID: ${ GITHUB_RUN_ID }-${ GITHUB_RUN_NUMBER }
 jobs:
-  greet:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
