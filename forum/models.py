@@ -14,8 +14,10 @@ from django.db.models import (
     DateTimeField,
     ForeignKey,
     ImageField,
+    ManyToManyField,
     Model,
     SlugField,
+    TextChoices,
     TextField
 )
 from django.db.utils import IntegrityError
@@ -37,34 +39,28 @@ class Community (Model):
     class Meta:
         verbose_name_plural: str = "communities"
 
-    name        : CharField     = CharField (
-                                    max_length = 64,
-                                    primary_key = True,
-                                    validators = [ ValidateAgainstBlacklist ([ "new" ]) ]
-                                  )
-    description : TextField     = TextField (blank = True, null = True)
-    private     : BooleanField  = BooleanField (default = False)
-    image       : ImageField    = ImageField (
-                                    upload_to = community_directory_path,
-                                    blank = True,
-                                    null = True
-                                  )
-    slug        : SlugField     = SlugField (editable = False)
-    created_by  : ForeignKey    = ForeignKey (User, null = True, on_delete = SET_NULL)
+    name        : CharField         = CharField (
+                                        max_length = 64,
+                                        primary_key = True,
+                                        validators = [ ValidateAgainstBlacklist ([ "all", "new" ]) ]
+                                      )
+    description : TextField         = TextField (blank = True, null = True)
+    private     : BooleanField      = BooleanField (default = False)
+    image       : ImageField        = ImageField (
+                                        upload_to = community_directory_path,
+                                        blank = True,
+                                        null = True
+                                      )
+    slug        : SlugField         = SlugField (editable = False)
+    created_by  : ForeignKey        = ForeignKey (User, null = True, on_delete = SET_NULL)
+    members     : ManyToManyField   = ManyToManyField (
+                                        User,
+                                        through = "Membership",
+                                        related_name = "members"
+                                      )
 
     def __str__ (self) -> str:
         return f"{ self.name }: /communities/{ self.slug }"
-
-    # Override
-    def delete (
-        self,
-        using: str = DEFAULT_DB_ALIAS,
-        keep_parents: bool = False
-    ) -> Tuple [int, Dict [str, int]]:
-        self.get_member_group ().delete ()
-        self.get_moderator_group ().delete ()
-
-        return super ().delete (using, keep_parents)
 
     # Override
     def get_absolute_url (self) -> str:
@@ -85,53 +81,59 @@ class Community (Model):
 
     def is_user_member (self, user: User) -> bool:
         """
-        If the user is part of the <community slug: members> group, then they are a member of this
-        community.
+        If the user has a record in the Membership table for this Community, then they are a member
 
-        user -- The user to check if they are a member of this community's member group
+        user -- The user to check if they are a member of this Community
         """
-        return self.get_member_group ().user_set.filter (username = user.username).exists ()
+        return self.members.filter (username = user.username).exists ()
 
     def is_user_moderator (self, user: User) -> bool:
         """
-        If the user is part of the <community slug: moderators> group, then they are a member of
-        this community.
+        If the user has a record in the Membership table for this Community and has the role of
+        Moderator, then they are a moderator
 
-        user -- The user to check if they are a member of this community's moderator group
+        user -- The user to check if they are a moderator of this Community
         """
-        return self.get_moderator_group ().user_set.filter (username = user.username).exists ()
+        return self.membership_set.filter (user = user, role = Membership.Role.MODERATOR).exists ()
 
     def get_member_count (self) -> int:
         """Returns the current count of members for this Community."""
-        return len (self.get_member_group ().user_set.all ())
+        return self.members.count ()
 
-    def get_member_group (self) -> Group:
-        return Group.objects.get_or_create (name = f"{ self.slug }: members") [0]
-
-    def get_moderator_group (self) -> Group:
-        return Group.objects.get_or_create (name = f"{ self.slug }: moderators") [0]
-
-    def add_user (self, user: User, include_moderator: bool = False) -> None:
+    def add_user (self, user: User, as_moderator: bool = False) -> None:
         """
-        Adds the given user to the members group for this Community, and to the moderator group if
-        `include_moderator` is True.
+        Adds the given user to the Membership table as a member of this Community, optionally as a
+        moderator if `as_moderator` is True.
 
-        user -- The User to add to the members  
-        include_moderator -- True to also add the user to the moderators group, otherwise ignore
+        user -- The User to add as a member of this Community 
+        as_moderator -- True to also add the user as a moderator, otherwise as a regular member
         """
-        self.get_member_group ().user_set.add (user)
-        if include_moderator:
-            self.get_moderator_group ().user_set.add (user)
+        membership = Membership.objects.create (user = user, community = self)
+        if as_moderator:
+            membership.role = Membership.Role.MODERATOR
+
+        membership.save ()
 
     def remove_user (self, user: User) -> None:
         """
-        Removes the given user from both the members and moderators groups for this Community.
+        Removes the given user from the Membership table for this Community.
 
-        user -- The User to remove from both membership groups
+        user -- The User to remove
         """
-        self.get_member_group ().user_set.remove (user)
-        self.get_moderator_group ().user_set.remove (user)
+        self.members.remove (user)
 # End Community Model
+
+# Membership Model
+class Membership (Model):
+    class Role (TextChoices):
+        MEMBER      = "Member"
+        MODERATOR   = "Moderator"
+
+    community   : ForeignKey    = ForeignKey (Community, on_delete = CASCADE)
+    user        : ForeignKey    = ForeignKey (User, on_delete = CASCADE)
+
+    role        : TextField     = TextField (choices = Role.choices, default = Role.MEMBER)
+# End Membership Model
 
 # Post Model
 class Post (Model):
