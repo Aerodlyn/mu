@@ -24,9 +24,6 @@ def get_ec2_private_ip ():
         return response.text
     except:
         return None
-    finally:
-        if response:
-            response.close()
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path (__file__).resolve ().parent.parent
