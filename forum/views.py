@@ -29,8 +29,7 @@ from .models import (
 )
 
 # Community-related views
-class CommunityCreateView (LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required : str                   = "forum.add_community"
+class CommunityCreateView (LoginRequiredMixin, CreateView):
     template_name       : str                   = "forum/community/community-create.html"
     form_class          : CommunityCreateForm   = CommunityCreateForm
 
