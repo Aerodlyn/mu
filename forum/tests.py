@@ -18,6 +18,7 @@ from .views import (
     CommunityCreateView,
     CommunityDetailView,
     CommunityListView,
+    CommunitySubscribedListView,
     update_user_community_membership
 )
 
@@ -148,6 +149,35 @@ class CommunityDetailViewTestCase (TestCase):
 
     def test_is_request_user_member (self):
         self.assertTrue (self.view.is_request_user_member ())
+
+class CommunitySubscribedListViewTestCase (TestCase):
+    def test_get_queryset_is_member (self):
+        user = User.objects.create (username = "test_user", password = "testpw123")
+        community = Community.objects.create (name = "Test Community", created_by = user)
+
+        url = reverse ("forum:community-list-subscribed")
+        
+        request = RequestFactory ().get (url)
+        request.user = user
+
+        view = CommunitySubscribedListView ()
+        view.setup (request)
+
+        self.assertIn (community, view.get_queryset ())
+
+    def test_get_queryset_is_not_member (self):
+        user = User.objects.create (username = "test_user", password = "testpw123")
+        community = Community.objects.create (name = "Test Community", created_by = user)
+
+        url = reverse ("forum:community-list-subscribed")
+        
+        request = RequestFactory ().get (url)
+        request.user = User.objects.create (username = "test_user_2", password = "testpw123")
+
+        view = CommunitySubscribedListView ()
+        view.setup (request)
+
+        self.assertNotIn (community, view.get_queryset ())
 
 class UpdateUserCommunityMembershipTestCase (TestCase):
     def setUp (self):

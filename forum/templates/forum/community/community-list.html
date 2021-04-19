@@ -19,11 +19,31 @@
 {% endblock subheader_buttons %}
 
 {% block subheader_title %}
-    All communities
+    Communities
 {% endblock subheader_title %}
 
 {% block content %}
-    <div class = "list-group">
+    <ul class = "nav nav-tabs">
+        {% with url_name=request.resolver_match.url_name %}
+            {% if url_name == "community-list-subscribed" %}
+                <li class = "nav-item">
+                    <a class = "nav-link active" aria-current = "page" href = "{% url 'forum:community-list-subscribed' %}">Subscribed</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{% url 'forum:community-list-all' %}">All</a>
+                </li>
+            {% else %}
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{% url 'forum:community-list-subscribed' %}">Subscribed</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link active" aria-current = "page" href = "{% url 'forum:community-list-all' %}">All</a>
+                </li>
+            {% endif %}
+        {% endwith %}
+    </ul>
+
+    <div class = "list-group list-group-flush border border-top-0">
         {% for community in object_list %}
             <a class = "list-group-item list-group-item-action" href = "{{ community.get_absolute_url }}">
                 <div class = "d-flex justify-content-between">

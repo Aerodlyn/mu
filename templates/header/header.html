@@ -26,23 +26,23 @@
                 {% endif %}
                 
                 {% with url_name=request.resolver_match.url_name %}
-                    {% if url_name == "community-list" %}
-                        <li class = "nav-item">
-                            <a
-                                class = "nav-link active"
-                                aria-current = "page"
-                                href = "{% url 'forum:community-list' %}"
-                                >
-                                Communities
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class = "nav-item">
-                            <a class = "nav-link" href = "{% url 'forum:community-list' %}">Communities</a>
-                        </li>
-                    {% endif %}
-
                     {% if request.user.is_authenticated %}
+                        {% if url_name == "community-list-subscribed" or url_name == "community-list-all" %}
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'forum:community-list-subscribed' %}"
+                                    >
+                                    Communities
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'forum:community-list-subscribed' %}">Communities</a>
+                            </li>
+                        {% endif %}
+
                         {% if url_name == "profile-detail" and object.user == request.user or url_name == "profile-update" %}
                             <li class = "nav-item">
                                 <a
@@ -75,6 +75,22 @@
                             </li>
                         {% endif %}
                     {% else %}
+                        {% if url_name == "community-list-all" %}
+                            <li class = "nav-item">
+                                <a
+                                    class = "nav-link active"
+                                    aria-current = "page"
+                                    href = "{% url 'forum:community-list-all' %}"
+                                    >
+                                    Communities
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'forum:community-list-all' %}">Communities</a>
+                            </li>
+                        {% endif %}
+
                         {% if url_name == "login" %}
                             <li class = "nav-item">
                                 <a

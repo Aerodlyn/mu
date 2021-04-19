@@ -42,7 +42,9 @@ class Community (Model):
     name        : CharField         = CharField (
                                         max_length = 64,
                                         primary_key = True,
-                                        validators = [ ValidateAgainstBlacklist ([ "all", "new" ]) ]
+                                        validators = [
+                                            ValidateAgainstBlacklist ([ "all", "new", "subscribed" ])
+                                        ]
                                       )
     description : TextField         = TextField (blank = True, null = True)
     private     : BooleanField      = BooleanField (default = False)
@@ -133,6 +135,10 @@ class Membership (Model):
     user        : ForeignKey    = ForeignKey (User, on_delete = CASCADE)
 
     role        : TextField     = TextField (choices = Role.choices, default = Role.MEMBER)
+
+    def __str__ (self) -> str:
+        return f"{ self.community } - { self.user }: { self.role }"
+    
 # End Membership Model
 
 # Post Model

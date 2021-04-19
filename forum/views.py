@@ -64,6 +64,11 @@ class CommunityListView (ListView):
 
     model           : Community = Community
 
+class CommunitySubscribedListView (LoginRequiredMixin, CommunityListView):
+    # Override
+    def get_queryset (self):
+        return Community.objects.filter (members = self.request.user)
+
 @login_required
 @require_POST
 def update_user_community_membership (request: HttpRequest, slug: str) -> HttpResponse:
