@@ -11,6 +11,7 @@ from .forms import CommunityCreateForm
 from .models import (
     Community,
     Post,
+    Membership,
     community_directory_path
 )
 from .validators import ValidateAgainstBlacklist
@@ -54,13 +55,25 @@ class CommunityTestCase (TestCase):
     def test_get_member_count (self):
         self.assertEqual (self.community.get_member_count (), 1)
 
-    def test_is_user_member (self):
+    def test_is_user_member_moderator (self):
         self.assertTrue (self.community.is_user_member (self.user))
+    
+    def test_is_user_member_not_member (self):
         self.assertFalse (
             self.community.is_user_member (
                 User.objects.create (username = "new_user", password = "testpw123")
             )
         )
+
+    def test_is_user_member_requested (self):
+        requested_user = User.objects.create (username = "new_user", password = "testpw123")
+        Membership.objects.create (
+            user = requested_user,
+            role = Membership.Role.REQUESTED,
+            community = self.community
+        )
+
+        self.assertFalse (self.community.is_user_member (requested_user))
 
     def test_is_user_moderator (self):
         self.assertTrue (self.community.is_user_moderator (self.user))

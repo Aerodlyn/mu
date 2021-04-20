@@ -14,10 +14,11 @@ from django.db.models import (
     DateTimeField,
     ForeignKey,
     ImageField,
+    IntegerChoices,
+    IntegerField,
     ManyToManyField,
     Model,
     SlugField,
-    TextChoices,
     TextField
 )
 from django.db.utils import IntegrityError
@@ -58,7 +59,7 @@ class Community (Model):
     members     : ManyToManyField   = ManyToManyField (
                                         User,
                                         through = "Membership",
-                                        related_name = "members"
+                                        related_name = "memberships"
                                       )
 
     def __str__ (self) -> str:
@@ -83,11 +84,12 @@ class Community (Model):
 
     def is_user_member (self, user: User) -> bool:
         """
-        If the user has a record in the Membership table for this Community, then they are a member
+        If the user has a record in the Membership table for this Community, and it is either MEMBER
+        or MODERATOR, then they are a member.
 
         user -- The user to check if they are a member of this Community
         """
-        return self.members.filter (username = user.username).exists ()
+        return user.is_authenticated and self.membership_set.filter (user = user).exclude (role = Membership.Role.REQUESTED).exists ()
 
     def is_user_moderator (self, user: User) -> bool:
         """
@@ -127,17 +129,18 @@ class Community (Model):
 
 # Membership Model
 class Membership (Model):
-    class Role (TextChoices):
-        MEMBER      = "Member"
-        MODERATOR   = "Moderator"
+    class Role (IntegerChoices):
+        MEMBER      = 0, "Member"
+        MODERATOR   = 1, "Moderator"
+        REQUESTED   = 2, "Requested"
 
     community   : ForeignKey    = ForeignKey (Community, on_delete = CASCADE)
     user        : ForeignKey    = ForeignKey (User, on_delete = CASCADE)
 
-    role        : TextField     = TextField (choices = Role.choices, default = Role.MEMBER)
+    role        : IntegerField  = IntegerField (choices = Role.choices, default = Role.MEMBER)
 
     def __str__ (self) -> str:
-        return f"{ self.community } - { self.user }: { self.role }"
+        return f"{ self.community } - { self.user }: { self.Role (self.role).label }"
     
 # End Membership Model
 
