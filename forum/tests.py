@@ -17,6 +17,7 @@ from .models import (
 from .validators import ValidateAgainstBlacklist
 from .views import (
     CommunityCreateView,
+    CommunityDeleteView,
     CommunityDetailView,
     CommunityListView,
     CommunitySubscribedListView,
@@ -142,6 +143,23 @@ class CommunityCreateViewTestCase (TestCase):
     def test_form_valid (self):
         self.view.form_valid (self.form)
         self.assertEqual (self.form.instance.created_by, self.user)
+
+class CommunityDeleteViewTestCase (TestCase):
+    def setUp (self):
+        self.user = User.objects.create (username = "test_user", password = "testpw123")
+        self.community = Community.objects.create (name = "Test Community", created_by = self.user)
+        
+        self.kwargs = { "slug": self.community.slug }
+        url = reverse ("forum:community-delete", kwargs = self.kwargs)
+        
+        request = RequestFactory ().get (url)
+        request.user = self.user
+
+        self.view = CommunityDeleteView ()
+        self.view.setup (request, **self.kwargs)
+
+    def test_has_permission (self):
+        self.assertTrue (self.view.has_permission ())
 
 class CommunityDetailViewTestCase (TestCase):
     def setUp (self):

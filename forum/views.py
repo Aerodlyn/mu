@@ -12,11 +12,18 @@ from django.http import (
     HttpResponseRedirect
 )
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import (
+    reverse,
+    reverse_lazy
+)
 from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import (
+    CreateView,
+    DeleteView,
+    UpdateView
+)
 from django.views.generic.list import (
     ListView,
     MultipleObjectMixin
@@ -37,6 +44,15 @@ class CommunityCreateView (LoginRequiredMixin, CreateView):
     def form_valid (self, form: BaseForm) -> HttpResponse:
         form.instance.created_by = self.request.user
         return super ().form_valid (form)
+
+class CommunityDeleteView (PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
+    success_url     : str       = reverse_lazy ("forum:index")
+    template_name   : str       = "forum/community/community-delete.html"
+    model           : Community = Community
+
+    # Override
+    def has_permission (self) -> bool:
+        return self.get_object ().is_user_moderator (self.request.user)
     
 class CommunityDetailView (PermissionRequiredMixin, DetailView, MultipleObjectMixin):
     paginate_by     : int       = 10

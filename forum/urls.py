@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView
 
 from .views import (
     CommunityCreateView,
+    CommunityDeleteView,
     CommunityDetailView,
     CommunityListView,
     CommunitySubscribedListView,
@@ -22,6 +23,11 @@ urlpatterns = [
         name = "community-list-subscribed"
     ),
     path ("communities/<slug:slug>", CommunityDetailView.as_view (), name = "community-detail"),
+    path (
+        "communities/<slug:slug>/delete",
+        CommunityDeleteView.as_view (),
+        name = "community-delete"
+    ),
     path (
         "communities/<slug:slug>/update-membership",
         update_user_community_membership,
