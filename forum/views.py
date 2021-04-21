@@ -82,7 +82,7 @@ class CommunityListView (ListView):
 class CommunitySubscribedListView (LoginRequiredMixin, CommunityListView):
     # Override
     def get_queryset (self):
-        return Community.objects.filter (members = self.request.user)
+        return Community.objects.filter (members = self.request.user).order_by ("name")
 
 @login_required
 @require_POST
