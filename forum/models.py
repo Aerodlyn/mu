@@ -72,15 +72,14 @@ class Community (Model):
     # Override
     def save (self, *args: list, **kwargs: dict):
         self.slug = slugify (self.name)
+        super ().save (*args, **kwargs)
+
         try:
-            with transaction.atomic ():
-                self.add_user (self.created_by, True)
+            self.add_user (self.created_by, True)
         except IntegrityError:
             # Description and/or Private is/are the only things changing, so new groups are not
             # needed
             pass
-
-        super ().save (*args, **kwargs)
 
     def is_user_member (self, user: User) -> bool:
         """
@@ -115,6 +114,7 @@ class Community (Model):
         membership = Membership.objects.create (user = user, community = self)
         if as_moderator:
             membership.role = Membership.Role.MODERATOR
+        print (membership)
 
         membership.save ()
 
