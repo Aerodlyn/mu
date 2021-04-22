@@ -72,6 +72,10 @@ class CommunityDetailView (PermissionRequiredMixin, DetailView, MultipleObjectMi
         """See Community.is_user_member"""
         return self.get_object ().is_user_member (self.request.user)
 
+    def is_request_user_moderator (self) -> bool:
+        """See Community.is_user_moderator"""
+        return self.get_object ().is_user_moderator (self.request.user)
+
 class CommunityListView (ListView):
     paginate_by     : int       = 10
     ordering        : list      = [ Lower ("name") ]

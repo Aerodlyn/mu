@@ -181,6 +181,9 @@ class CommunityDetailViewTestCase (TestCase):
     def test_is_request_user_member (self):
         self.assertTrue (self.view.is_request_user_member ())
 
+    def test_is_request_user_moderator (self):
+        self.assertTrue (self.view.is_request_user_moderator ())
+
 class CommunitySubscribedListViewTestCase (TestCase):
     def test_get_queryset_is_member (self):
         user = User.objects.create (username = "test_user", password = "testpw123")
