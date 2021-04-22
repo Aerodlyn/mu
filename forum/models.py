@@ -114,7 +114,6 @@ class Community (Model):
         membership = Membership.objects.create (user = user, community = self)
         if as_moderator:
             membership.role = Membership.Role.MODERATOR
-        print (membership)
 
         membership.save ()
 
