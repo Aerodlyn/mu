@@ -1,0 +1,15 @@
+{% extends "base/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block subheader_buttons %}
+    <a class = "btn btn-outline-secondary" href = "{{ object.get_absolute_url }}">Cancel</a>
+{% endblock subheader_buttons %}
+
+{% block subheader_title %}
+    Update {{ object.name }}
+{% endblock subheader_title %}
+
+{% block content %}
+    {% crispy form %}
+{% endblock content %}

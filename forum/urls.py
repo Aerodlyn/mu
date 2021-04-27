@@ -7,6 +7,7 @@ from .views import (
     CommunityDetailView,
     CommunityListView,
     CommunitySubscribedListView,
+    CommunityUpdateView,
     IndexView,
     update_user_community_membership
 )
@@ -27,6 +28,11 @@ urlpatterns = [
         "communities/<slug:slug>/delete",
         CommunityDeleteView.as_view (),
         name = "community-delete"
+    ),
+    path (
+        "communities/<slug:slug>/update",
+        CommunityUpdateView.as_view (),
+        name = "community-update"
     ),
     path (
         "communities/<slug:slug>/update-membership",

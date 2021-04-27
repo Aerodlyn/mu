@@ -29,7 +29,10 @@ from django.views.generic.list import (
     MultipleObjectMixin
 )
 
-from .forms import CommunityCreateForm
+from .forms import (
+    CommunityCreateForm,
+    CommunityUpdateForm
+)
 from .models import (
     Community,
     Post
@@ -87,6 +90,15 @@ class CommunitySubscribedListView (LoginRequiredMixin, CommunityListView):
     # Override
     def get_queryset (self):
         return Community.objects.filter (members = self.request.user).order_by ("name")
+
+class CommunityUpdateView (PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    template_name       : str                   = "forum/community/community-update.html"
+    model               : Community             = Community
+    form_class          : CommunityUpdateForm   = CommunityUpdateForm
+
+    # Override
+    def has_permission (self) -> bool:
+        return self.get_object ().is_user_moderator (self.request.user)
 
 @login_required
 @require_POST

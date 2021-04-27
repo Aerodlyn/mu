@@ -44,7 +44,12 @@ class Community (Model):
                                         max_length = 64,
                                         primary_key = True,
                                         validators = [
-                                            ValidateAgainstBlacklist ([ "all", "new", "subscribed" ])
+                                            ValidateAgainstBlacklist ([
+                                                "all",
+                                                "new",
+                                                "subscribed",
+                                                "update"
+                                            ])
                                         ]
                                       )
     description : TextField         = TextField (blank = True, null = True)
@@ -111,7 +116,7 @@ class Community (Model):
         user -- The User to add as a member of this Community 
         as_moderator -- True to also add the user as a moderator, otherwise as a regular member
         """
-        membership = Membership.objects.create (user = user, community = self)
+        membership = Membership.objects.get_or_create (user = user, community = self) [0]
         if as_moderator:
             membership.role = Membership.Role.MODERATOR
 

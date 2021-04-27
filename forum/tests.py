@@ -7,7 +7,10 @@ from django.test import (
 )
 from django.urls import reverse
 
-from .forms import CommunityCreateForm
+from .forms import (
+    CommunityCreateForm,
+    CommunityUpdateForm
+)
 from .models import (
     Community,
     Post,
@@ -21,6 +24,7 @@ from .views import (
     CommunityDetailView,
     CommunityListView,
     CommunitySubscribedListView,
+    CommunityUpdateView,
     update_user_community_membership
 )
 
@@ -28,6 +32,13 @@ from .views import (
 class CommunityCreateFormTestCase (TestCase):
     def setUp (self):
         self.form = CommunityCreateForm ()
+
+    def test_helper (self):
+        self.assertTrue (self.form.helper.form_tag)
+
+class CommunityUpdateFormTestCase (TestCase):
+    def setUp (self):
+        self.form = CommunityUpdateForm ()
 
     def test_helper (self):
         self.assertTrue (self.form.helper.form_tag)
@@ -212,6 +223,27 @@ class CommunitySubscribedListViewTestCase (TestCase):
         view.setup (request)
 
         self.assertNotIn (community, view.get_queryset ())
+
+class CommunityUpdateViewTestCase (TestCase):
+    def setUp (self):
+        self.user = User.objects.create (username = "test_user", password = "testpw123")
+        self.community = Community.objects.create (name = "Test Community", created_by = self.user)
+        
+        kwargs = { "slug": self.community.slug }
+        url = reverse ("forum:community-update", kwargs = kwargs)
+        
+        request = RequestFactory ().get (url)
+        request.user = self.user
+
+        self.view = CommunityUpdateView ()
+        self.view.setup (request, **kwargs)
+
+        self.form = CommunityUpdateForm ({ "description": "Test Community" })
+        self.form.instance = self.community
+
+    def test_form_valid (self):
+        self.view.form_valid (self.form)
+        self.assertEqual (self.form.instance.created_by, self.user)
 
 class UpdateUserCommunityMembershipTestCase (TestCase):
     def setUp (self):
