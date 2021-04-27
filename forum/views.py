@@ -89,7 +89,7 @@ class CommunityListView (ListView):
 class CommunitySubscribedListView (LoginRequiredMixin, CommunityListView):
     # Override
     def get_queryset (self):
-        return Community.objects.filter (members = self.request.user).order_by ("name")
+        return Community.objects.filter (members = self.request.user).order_by (Lower ("name"))
 
 class CommunityUpdateView (PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name       : str                   = "forum/community/community-update.html"
