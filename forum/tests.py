@@ -25,6 +25,7 @@ from .views import (
     CommunityListView,
     CommunitySubscribedListView,
     CommunityUpdateView,
+    PostDetailView,
     update_user_community_membership
 )
 
@@ -244,6 +245,36 @@ class CommunityUpdateViewTestCase (TestCase):
     def test_form_valid (self):
         self.view.form_valid (self.form)
         self.assertEqual (self.form.instance.created_by, self.user)
+
+class PostDetailViewTestCase (TestCase):
+    def setUp (self):
+        self.user = User.objects.create (username = "test_user", password = "testpw123")
+        self.community = Community.objects.create (
+            name = "Test Community",
+            created_by = self.user,
+            private = True
+        )
+        self.post = Post.objects.create (
+            title = "Test Post",
+            created_by = self.user,
+            posted_in = self.community
+        )
+
+        self.kwargs = {
+            "community_slug": self.community.slug,
+            "id": self.post.id,
+            "slug": self.post.slug
+        }
+        url = reverse ("forum:post-detail", kwargs = self.kwargs)
+        
+        request = RequestFactory ().get (url)
+        request.user = self.user
+
+        self.view = PostDetailView ()
+        self.view.setup (request, **self.kwargs)
+
+    def test_has_permission (self):
+        self.assertTrue (self.view.has_permission ())
 
 class UpdateUserCommunityMembershipTestCase (TestCase):
     def setUp (self):

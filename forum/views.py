@@ -111,6 +111,16 @@ def update_user_community_membership (request: HttpRequest, slug: str) -> HttpRe
 
     return HttpResponseRedirect (reverse ("forum:community-detail", kwargs = { "slug": slug }))
 
+# Post-related views
+class PostDetailView (PermissionRequiredMixin, DetailView):
+    template_name   : str   = "forum/post/post-detail.html"
+    model           : Post  = Post
+
+    # Override
+    def has_permission (self) -> bool:
+        community: Community = self.get_object ().posted_in
+        return not community.private or community.is_user_member (self.request.user)
+
 # Etc. views
 class IndexView (TemplateView):
     template_name: str = "forum/index.html"

@@ -1,0 +1,13 @@
+{% extends "base/base.html" %}
+
+{% block subheader_buttons %}
+    <a class = "btn btn-outline-secondary" href = "{{ request.META.HTTP_REFERER }}">Back</a>
+{% endblock subheader_buttons %}
+
+{% block subheader_title %}
+    {{ object.title }}
+{% endblock subheader_title %}
+
+{% block content %}
+    <p class = "text-pre-line">{{ object.content }}</p>
+{% endblock content %}

@@ -166,8 +166,8 @@ class Post (Model):
             "forum:post-detail",
             kwargs = {
                 "community_slug": self.posted_in.slug,
-                "post_id": self.id,
-                "post_slug": self.slug
+                "id": self.id,
+                "slug": self.slug
             }
         )
 
