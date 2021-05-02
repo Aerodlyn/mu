@@ -12,6 +12,7 @@ from .forms import (
     CommunityUpdateForm
 )
 from .models import (
+    Comment,
     Community,
     Post,
     Membership,
@@ -45,6 +46,29 @@ class CommunityUpdateFormTestCase (TestCase):
         self.assertTrue (self.form.helper.form_tag)
 
 # Model Tests
+class CommentTestCase (TestCase):
+    def setUp (self):
+        self.user = User.objects.create (username = "test_user", password = "testpw123")
+        self.community = Community.objects.create (name = "Test Community", created_by = self.user)
+        self.post = Post.objects.create (
+            title = "Test Post",
+            content = "testing",
+            created_by = self.user,
+            posted_in = self.community
+        )
+        self.comment = Comment.objects.create (
+            content = "Test content",
+            made_on = self.post,
+            created_by = self.user
+        )
+
+    def test_delete (self):
+        self.comment.delete ()
+
+        comment = Comment.objects.get (pk = self.comment.id)
+        self.assertEqual (comment.content, "[Deleted]")
+        self.assertIsNone (comment.created_by)
+
 class CommunityTestCase (TestCase):
     def setUp (self):
         self.user = User.objects.create (username = "test_user", password = "testpw123")
@@ -121,6 +145,14 @@ class PostTestCase (TestCase):
             created_by = self.user,
             posted_in = self.community
         )
+
+    def test_delete (self):
+        self.post.delete ()
+        
+        post = Post.objects.get (pk = self.post.id)
+        self.assertEqual (post.content, "[Deleted]")
+        self.assertIsNone (post.created_by)
+        self.assertIsNone (post.posted_in)
     
     def test_get_absolute_url (self):
         self.assertEqual (
