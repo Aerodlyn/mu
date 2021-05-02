@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
     "crispy_forms",
     "extra_views",
+    "mptt",
     "rest_framework",
 
     "forum.apps.ForumConfig",
