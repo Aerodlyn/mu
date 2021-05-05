@@ -4,9 +4,11 @@ from django.db.models import (
     CASCADE,
     DO_NOTHING,
     SET_NULL,
+    DateTimeField,
     ForeignKey,
     TextField
 )
+from django.urls import reverse
 
 from mptt.models import (
     MPTTModel,
@@ -23,6 +25,7 @@ from .post import Post
 class Comment (MPTTModel):
     # ? Deletion behavior
     content     : TextField     = TextField ()
+    created_at  : DateTimeField = DateTimeField (auto_now_add = True)
     made_on     : ForeignKey    = ForeignKey (Post, null = True, on_delete = SET_NULL)
     created_by  : ForeignKey    = ForeignKey (User, null = True, on_delete = SET_NULL)
     parent      : ForeignKey    = TreeForeignKey (
@@ -48,3 +51,14 @@ class Comment (MPTTModel):
         self.save ()
 
         return (1, { "forum.Comment": 1 })
+
+    # Override
+    def get_absolute_url (self) -> str:
+        return reverse (
+            "forum:post-detail",
+            kwargs = {
+                "community_slug": self.made_on.community.slug,
+                "id": self.made_on.id,
+                "slug": self.made_on.slug
+            }
+        )

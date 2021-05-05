@@ -31,7 +31,8 @@ from django.views.generic.list import (
 
 from .forms import (
     CommunityCreateForm,
-    CommunityUpdateForm
+    CommunityUpdateForm,
+    PostCreateForm
 )
 from .models import (
     Community,
@@ -112,6 +113,29 @@ def update_user_community_membership (request: HttpRequest, slug: str) -> HttpRe
     return HttpResponseRedirect (reverse ("forum:community-detail", kwargs = { "slug": slug }))
 
 # Post-related views
+class PostCreateView (PermissionRequiredMixin, CreateView):
+    template_name       : str               = "forum/post/post-create.html"
+    form_class          : PostCreateForm    = PostCreateForm
+
+    @property
+    def community (self) -> Community:
+        try:
+            self._community
+        except AttributeError:
+            self._community = Community.objects.get (slug = self.kwargs ["community_slug"])
+        return self._community
+    
+    # Override
+    def form_valid (self, form: BaseForm) -> HttpResponse:
+        form.instance.created_by = self.request.user
+        form.instance.posted_in = self.community
+
+        return super ().form_valid (form)
+
+    # Override
+    def has_permission (self) -> bool:
+        return not self.community.private or self.community.is_user_member (self.request.user)
+
 class PostDetailView (PermissionRequiredMixin, DetailView):
     template_name   : str   = "forum/post/post-detail.html"
     model           : Post  = Post

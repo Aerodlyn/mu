@@ -1,5 +1,7 @@
 {% extends "base/base.html" %}
 
+{% load mptt_tags %}
+
 {% block subheader_buttons %}
     <a class = "btn btn-outline-secondary" href = "{{ request.META.HTTP_REFERER }}">Back</a>
 {% endblock subheader_buttons %}
@@ -10,4 +12,94 @@
 
 {% block content %}
     <p class = "text-pre-line">{{ object.content }}</p>
+
+    <form class = "d-flex flex-column align-items-sm-end">
+        <textarea class = "form-control mb-3" placeholder = "Comment here" rows = "5"></textarea>
+        <button class = "btn btn-primary" type = "submit">Comment</button>
+    </form>
+
+    <hr>
+
+    <div class = "ms-3">
+        {% recursetree object.comment_set.all %}
+            <div class = "d-flex border-start position-relative highlight" id = "comment_{{ node.id }}">
+                <div class = "position-absolute start-0 translate-middle-x">
+                    {% if node.created_by.profile.avatar %}
+                        <img
+                            class = "rounded-circle"
+                            src = "{{ node.created_by.profile.avatar.url }}"
+                            width = "32"
+                            height = "32"
+                            alt = "Profile picture"
+                            >
+                    {% else %}
+                        <!-- https://icons.getbootstrap.com/icons/person-circle/ -->
+                        <svg
+                            xmlns = "http://www.w3.org/2000/svg"
+                            width = "32"
+                            height = "32"
+                            fill = "currentColor"
+                            class = "bi bi-person-circle bg-body"
+                            viewBox = "0 0 16 16">
+                            <path d = "M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path
+                                fill-rule = "evenodd"
+                                d = "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                                />
+                        </svg>
+                    {% endif %}
+                </div>
+                <div class = "flex-grow-1 ms-4">
+                    <span>
+                        <a href = "{% url 'user:profile-detail' node.created_by %}">{{ node.created_by }}</a>
+                        | {{ node.created_at|timesince }} ago
+                    </span>
+                    
+                    <p class = "text-pre-line m-0">{{ node.content }}</p>
+
+                    <div class = "d-flex mb-3">
+                        <button class = "btn p-0">
+                            <!-- https://icons.getbootstrap.com/icons/arrow-up-circle/ -->
+                            <svg
+                                xmlns = "http://www.w3.org/2000/svg"
+                                width = "24"
+                                height = "24"
+                                fill = "currentColor"
+                                class = "bi bi-arrow-up-circle"
+                                viewBox = "0 0 16 16"
+                                >
+                                <path
+                                    fill-rule = "evenodd"
+                                    d = "M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"
+                                    />
+                            </svg>
+                        </button>
+
+                        <button class = "btn p-0">
+                            <!-- https://icons.getbootstrap.com/icons/arrow-down-circle/ -->
+                            <svg
+                                xmlns = "http://www.w3.org/2000/svg"
+                                width = "24"
+                                height = "24"
+                                fill = "currentColor"
+                                class = "bi bi-arrow-down-circle"
+                                viewBox = "0 0 16 16"
+                                >
+                                <path
+                                    fill-rule = "evenodd"
+                                    d = "M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"
+                                    />
+                            </svg>
+                        </button>
+
+                        <button class = "btn">Reply</button>
+                    </div>
+
+                    {% if not node.is_leaf_node %}
+                        {{ children }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endrecursetree %}
+    </div>
 {% endblock content %}

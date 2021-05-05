@@ -19,9 +19,22 @@ body {
     background-size: 22px 22px; */
 }
 
+.highlight:target {
+    border: 1px solid #dee2e6;
+}
+
 .profile-img {
     max-width: 96px;
     max-height: 96px;
+}
+
+/* See: https://stackoverflow.com/a/34559614 */
+.text-display-limit {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .text-pre-line {

@@ -9,7 +9,8 @@ from django.urls import reverse
 
 from .forms import (
     CommunityCreateForm,
-    CommunityUpdateForm
+    CommunityUpdateForm,
+    PostCreateForm
 )
 from .models import (
     Comment,
@@ -26,6 +27,7 @@ from .views import (
     CommunityListView,
     CommunitySubscribedListView,
     CommunityUpdateView,
+    PostCreateView,
     PostDetailView,
     update_user_community_membership
 )
@@ -41,6 +43,13 @@ class CommunityCreateFormTestCase (TestCase):
 class CommunityUpdateFormTestCase (TestCase):
     def setUp (self):
         self.form = CommunityUpdateForm ()
+
+    def test_helper (self):
+        self.assertTrue (self.form.helper.form_tag)
+
+class PostCreateFormTestCase (TestCase):
+    def setUp (self):
+        self.form = PostCreateForm ()
 
     def test_helper (self):
         self.assertTrue (self.form.helper.form_tag)
@@ -277,6 +286,34 @@ class CommunityUpdateViewTestCase (TestCase):
     def test_form_valid (self):
         self.view.form_valid (self.form)
         self.assertEqual (self.form.instance.created_by, self.user)
+
+class PostCreateViewTestCase (TestCase):
+    def setUp (self):
+        self.user = User.objects.create (username = "test_user", password = "testpw123")
+        self.community = Community.objects.create (
+            name = "Test Community",
+            created_by = self.user,
+            private = True
+        )
+        
+        kwargs = { "community_slug": self.community.slug }
+        url = reverse ("forum:post-create", kwargs = kwargs)
+        
+        request = RequestFactory ().get (url)
+        request.user = self.user
+
+        self.view = PostCreateView ()
+        self.view.setup (request, **kwargs)
+
+        self.form = PostCreateForm ({ "title": "Test Post", "content": "Test content..." })
+
+    def test_form_valid (self):
+        self.view.form_valid (self.form)
+        self.assertEqual (self.form.instance.created_by, self.user)
+        self.assertEqual (self.form.instance.posted_in, self.community)
+
+    def test_has_permission (self):
+        self.assertTrue (self.view.has_permission ())
 
 class PostDetailViewTestCase (TestCase):
     def setUp (self):

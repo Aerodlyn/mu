@@ -9,6 +9,7 @@ from .views import (
     CommunitySubscribedListView,
     CommunityUpdateView,
     IndexView,
+    PostCreateView,
     PostDetailView,
     update_user_community_membership
 )
@@ -42,6 +43,11 @@ urlpatterns = [
     ),
 
     # Post Views
+    path (
+        "communities/<slug:community_slug>/posts/create",
+        PostCreateView.as_view (),
+        name = "post-create"
+    ),
     path (
         "communities/<slug:community_slug>/posts/<int:id>/<slug:slug>",
         PostDetailView.as_view (),

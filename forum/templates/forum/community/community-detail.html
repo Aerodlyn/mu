@@ -9,7 +9,11 @@
         <form action = "{% url 'forum:community-update-membership' object.slug %}" method = "POST">
             {% csrf_token %}
             <div class = "btn-group w-100 mb-2" role = "group" aria-label = "Community controls">
-                <a class = "btn btn-outline-secondary" href = "" title = "Create new post">
+                <a
+                    class = "btn btn-outline-secondary"
+                    href = "{% url 'forum:post-create' object.slug %}"
+                    title = "Create new post"
+                    >
                     <!-- https://icons.getbootstrap.com/icons/file-earmark-plus/ -->
                     <svg
                         xmlns = "http://www.w3.org/2000/svg"
@@ -162,7 +166,7 @@
                 {{ post.title }}
             </div>
             <div class = "card-body">
-                <p class = "card-text text-pre-line">{{ post.content }}</p>
+                <p class = "card-text text-pre-line text-display-limit">{{ post.content }}</p>
             </div>
             <div class = "card-footer">
                 <div class = "row">
