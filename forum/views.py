@@ -113,7 +113,7 @@ def update_user_community_membership (request: HttpRequest, slug: str) -> HttpRe
     return HttpResponseRedirect (reverse ("forum:community-detail", kwargs = { "slug": slug }))
 
 # Post-related views
-class PostCreateView (PermissionRequiredMixin, CreateView):
+class PostCreateView (PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     template_name       : str               = "forum/post/post-create.html"
     form_class          : PostCreateForm    = PostCreateForm
 
