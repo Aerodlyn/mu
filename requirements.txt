@@ -1,3 +1,4 @@
+## The following requirements were added by pip freeze:
 argcomplete==1.12.3
 asgiref==3.3.1
 boto3==1.17.50
@@ -42,4 +43,3 @@ troposphere==2.7.1
 urllib3==1.26.4
 Werkzeug==0.16.1
 wsgi-request-logger==0.4.6
-zappa==0.52.0
